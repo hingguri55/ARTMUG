@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 커미션 포트폴리오</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/aggro.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        :root {
+            --bg-color: #ffffff;          
+            --border-color: #e2e8f0;      
+            --text-color: #000000;
+            --accent-blue-light: #bae6fd; 
+            --window-title-color: #000000;
+            --portfolio-secondary: #64748b;
+        }
+
+        body { 
+            font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif !important; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            padding: 40px 20px; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        
+        .wrapper {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 45px;
+        }
+
+        .section-block {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 5px 0;
+        }
+
+        .section-header-title {
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--window-title-color);
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-header-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 2px;
+            width: 100%;
+            height: 10px;
+            background-color: var(--accent-blue-light);
+            z-index: -1;
+            opacity: 0.75;
+            border-radius: 2px;
+        }
+
+        .intro-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 4px;
+            align-items: flex-start;
+        }
+
+        /* 필독 사항 박스 스타일 */
+        .notice-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 16px; 
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .notice-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px; 
+        }
+
+        .notice-item-tight {
+            display: flex;
+            flex-direction: column;
+            gap: 0px; 
+        }
+
+        .notice-sub {
+            color: #1e293b; 
+            font-size: 15.5px; 
+            font-weight: 600;
+        }
+
+        .notice-highlight {
+            color: #dc2626;
+            font-size: 13.5px; 
+            font-weight: 600;
+            margin-top: -2px;  
+            display: block;    
+        }
+
+        /* 작업 과정 스타일 */
+        .process-container {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            width: 100%;
+            gap: 12px;
+        }
+
+        .process-item {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+        }
+
+        .process-item:hover {
+            border-color: #bae6fd;
+            box-shadow: 0 4px 12px rgba(186, 230, 253, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .process-step {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+            border-radius: 50%;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            width: 28px;
+            height: 28px;
+            box-shadow: 0 2px 4px rgba(186, 230, 253, 0.3);
+        }
+
+        .process-title {
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #0f172a;
+            word-break: keep-all;
+            line-height: 1.4;
+        }
+
+        .process-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0284c7;
+            font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
+            width: 16px;
+            text-align: center;
+            user-select: none;
+        }
+
+        /* 문의 양식 스타일 */
+        .inquiry-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 14.5px;
+            color: #1e293b;
+            font-weight: 700;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: #ffffff;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 14px;
+            color: #0f172a;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(186, 230, 253, 0.4);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .form-textarea.nickname-textarea {
+            min-height: 60px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="radio"] {
+            accent-color: #0284c7;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .inquiry-links {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 4px;
+        }
+
+        .inquiry-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            background: #f0f7ff;
+            color: #0f172a;
+            border: 1px solid #bae6fd;
+            cursor: pointer;
+            width: auto;
+            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.2);
+        }
+        .inquiry-btn:hover {
+            background: #e0f2fe;
+            color: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(186, 230, 253, 0.4);
+        }
+
+        .portfolio-tab-menu {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--portfolio-secondary);
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: #f0f7ff;
+            color: #0f172a;
+            border-color: #bae6fd;
+            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.3);
+        }
+
+        .avatar-tag-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .avatar-tag-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #bae6fd;
+            background: #f0f7ff;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.3);
+            cursor: default;
+        }
+
+        .scrollable-gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            width: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        .scrollable-gallery-container:active {
+            cursor: grabbing;
+        }
+
+        .scrollable-gallery-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scrollable-gallery-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .scrollable-gallery-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .horizontal-grid {
+            display: grid;
+            gap: 16px;
+            grid-auto-flow: column;
+            grid-auto-columns: 280px;
+            width: max-content;
+            padding: 4px 2px;
+        }
+
+        .gallery-item {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            width: 280px;
+        }
+        .gallery-item:hover {
+            transform: translateY(-3px);
+            border-color: #bae6fd;
+            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.06);
+        }
+
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            width: 100%;
+            padding: 4px 2px;
+        }
+
+        .avatar-item {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
+        }
+        .avatar-item:hover {
+            transform: translateY(-2px);
+            border-color: #bae6fd;
+            box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.05);
+        }
+
+        .gallery-img-box {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            background: #f1f5f9;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .gallery-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            z-index: 2;
+            color: #000000;
+        }
+        .badge-selling { background: #ecfdf5; border: 1px solid #a7f3d0; }
+        .badge-sold { background: #f1f5f9; border: 1px solid #cbd5e1; }
+        .badge-soop { background: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7; }
+        .badge-chzzk { background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; }
+
+        .gallery-info {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .gallery-title {
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--window-title-color);
+        }
+        .gallery-desc {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--portfolio-secondary);
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(6px);
+            justify-content: center; 
+            align-items: center;
+            padding: 20px;
+        }
+        .image-modal.active { display: flex; }
+
+        .modal-content-wrapper {
+            position: relative;
+            display: inline-flex; 
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .modal-video-preparing {
+            background: #1e293b;
+            color: #94a3b8;
+            font-family: 'SBAggroB', 'Pretendard', sans-serif;
+            font-size: 16px;
+            padding: 60px 80px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #ffffff; 
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1010;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .modal-close-btn:hover { 
+            transform: scale(1.1); 
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <!-- 필독 사항 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">필독 사항</div>
+        </div>
+        <div class="notice-box">
+            <div class="notice-item">원활한 작업 진행을 위해 결제 전 문의 부탁드립니다</div>
+            <div class="notice-item">모든 작업은 입금 순서에 따라 진행됩니다</div>
+            <div class="notice-item">사용 예정인 BOOTH 파츠가 방송 사용 가능한 아이템인지 사전에 확인해주세요</div>
+            <div class="notice-item-tight">
+                작업에 사용하는 모든 파츠는 의뢰자와 작가 양측 보유가 원칙으로<br>
+                작가가 보유하지 않은 파츠를 사용하실 경우, BOOTH 선물하기 기능을 통해 전달해주셔야합니다
+                <span class="notice-highlight">(해당 사항을 준수하지 않아 발생하는 문제에 대해 작가는 책임지지 않습니다)</span>
+            </div>
+            <div class="notice-item">페이셜 작업이 시작된 이후에는 성형 수정 및 얼굴 메이크업 텍스처 변경이 불가능 합니다</div>
+            <div class="notice-item-tight">
+                최종본 전달 후 3개월 이상 추가 작업이 없을 경우 작업 데이터는 정리과정에서 삭제될 수 있습니다
+                <div class="notice-sub">보관을 원하실 경우 유니티 패키지 구매를 권장드립니다</div>
+                <div class="notice-sub">유니티 패키지에는 FBX 파일이 포함되지 않습니다 (요청 시 별도 제공 가능)</div>
+            </div>
+            <div class="notice-item-tight">
+                완성된 작업물은 작가의 포트폴리오에 활용될 수 있습니다
+                <div class="notice-sub">비공개를 원하실 경우 포트폴리오 비공개 옵션을 선택해주세요</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 0. 상단: 작업 과정 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">작업 과정</div>
+        </div>
+
+        <div class="process-container">
+            <div class="process-item">
+                <span class="process-step">01</span>
+                <div class="process-title">문의 및 상담</div>
+            </div>
+            <div class="process-arrow">›</div>
+            <div class="process-item">
+                <span class="process-step">02</span>
+                <div class="process-title">주문 및 결제</div>
+            </div>
+            <div class="process-arrow">›</div>
+            <div class="process-item">
+                <span class="process-step">03</span>
+                <div class="process-title">성형 작업 (1차 컨펌)</div>
+            </div>
+            <div class="process-arrow">›</div>
+            <div class="process-item">
+                <span class="process-step">04</span>
+                <div class="process-title">페이셜 작업 (2차 컨펌)</div>
+            </div>
+            <div class="process-arrow">›</div>
+            <div class="process-item">
+                <span class="process-step">05</span>
+                <div class="process-title">뚜따</div>
+            </div>
+            <div class="process-arrow">›</div>
+            <div class="process-item">
+                <span class="process-step">06</span>
+                <div class="process-title">최종 작업물 전달</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 1. 보유 아바타 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">보유 아바타</div>
+        </div>
+
+        <div class="avatar-tag-menu">
+            <div class="avatar-tag-btn">마누카</div>
+            <div class="avatar-tag-btn">시나노</div>
+            <div class="avatar-tag-btn">시오</div>
+            <div class="avatar-tag-btn">루루네</div>
+            <div class="avatar-tag-btn">코마노</div>
+            <div class="avatar-tag-btn">키펠</div>
+        </div>
+
+        <div class="avatar-grid">
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A7%88%EB%88%84%EC%B9%B4.png" alt="마누카 썸네일">
+                </div>
+            </div>
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%8B%9C%EB%82%98%EB%85%B8.png" alt="시나노 썸네일">
+                </div>
+            </div>
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%8B%9C%EC%98%A4.png" alt="시오 썸네일">
+                </div>
+            </div>
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A3%A8%EB%A3%A8%EB%84%A4.png" alt="루루네 썸네일">
+                </div>
+            </div>
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%BD%94%EB%A7%88%EB%85%B8.png" alt="코마노 썸네일">
+                </div>
+            </div>
+            <div class="avatar-item">
+                <div class="gallery-img-box">
+                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%82%A4%ED%8E%A0.png" alt="키펠 썸네일">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 2. 개인작 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">개인작</div>
+            <div class="intro-desc">
+                <span>- 개인작은 VSF 기준으로 제작됩니다 (Warudo 변환을 원하실 경우 별도 문의해 주세요)</span>
+                <span>- 눈동자 및 헤어 색상 변경이 가능합니다 (텍스처는 변경 불가)</span>
+            </div>
+        </div>
+
+        <div class="scrollable-gallery-container">
+            <div class="horizontal-grid">
+                <div class="gallery-item">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-selling">분양 중</span>
+                        <div class="image-preparing" style="font-family:'SBAggroB','Pretendard',sans-serif; font-size:13px; color:#94a3b8; font-weight:600;">이미지 준비중</div>
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">준비중</div>
+                        <div class="gallery-desc">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portfolio-tab-menu" style="margin-top: 10px;">
+            <button class="tab-btn active" onclick="filterPersonalSold('all', this)">전체</button>
+            <button class="tab-btn" onclick="filterPersonalSold('manuka', this)">마누카</button>
+            <button class="tab-btn" onclick="filterPersonalSold('sinano', this)">시나노</button>
+        </div>
+
+        <div class="scrollable-gallery-container">
+            <div class="horizontal-grid" id="personalSoldGrid">
+                <div class="gallery-item" data-category="manuka">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-sold">분양 완료</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(1).png" alt="개인작 01 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">개인작 01</div>
+                        <div class="gallery-desc">마누카</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="manuka">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-sold">분양 완료</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(2).png" alt="개인작 02 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">개인작 02</div>
+                        <div class="gallery-desc">마누카</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="sinano">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-sold">분양 완료</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(3).png" alt="개인작 03 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">개인작 03</div>
+                        <div class="gallery-desc">시나노</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="sinano">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-sold">분양 완료</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(4).png" alt="개인작 04 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">개인작 04</div>
+                        <div class="gallery-desc">시나노</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="sinano">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-sold">분양 완료</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(5).png" alt="개인작 05 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">개인작 05</div>
+                        <div class="gallery-desc">시나노</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 3. 포트폴리오 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">포트폴리오</div>
+        </div>
+
+        <div class="portfolio-tab-menu">
+            <button class="tab-btn active" onclick="filterPortfolio('all', this)">전체</button>
+            <button class="tab-btn" onclick="filterPortfolio('female', this)">여캐</button>
+            <button class="tab-btn" onclick="filterPortfolio('male', this)">남캐</button>
+        </div>
+
+        <div class="scrollable-gallery-container">
+            <div class="horizontal-grid" id="portfolioGrid">
+                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%8B%A8%EB%A7%9D%EC%B0%8C.png" alt="단망찌님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">단망찌님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A3%A8%EB%A5%B4.png" alt="루르님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">루르님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A5%B4%EC%A0%95.png" alt="르*님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">르*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <!-- 만복님 이미지 링크 반영 완료 -->
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A7%8C%EB%B3%B5.png" alt="만복님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">만*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%86%A1%EC%9B%8C%EB%9F%89.png" alt="송워량님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">송워량님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9D%B4%EB%88%84%ED%98%95.png" alt="이누형님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">이누형님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9A%94%EC%B0%8C.png" alt="요*님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">요*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-soop">SOOP</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9A%94%EC%BD%94%EB%A7%81.png" alt="요코링님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">요코링님</div>
+                        <div class="gallery-desc">Warudo</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-soop">SOOP</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9C%84%EB%8B%88%EC%97%98.png" alt="위**님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">위**님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%BF%A0%EC%8A%A4.png" alt="쿠*님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">쿠*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%B1%A0%EC%BD%94%EC%95%BC.png" alt="챠코야님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">챠코야님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%85%8C%EC%96%80.png" alt="테*님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">테*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%83%9C%ED%98%B8.png" alt="태호님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">태호님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
+                    <div class="gallery-img-box">
+                        <span class="status-badge badge-chzzk">Chzzk</span>
+                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%95%B4%EA%B5%B0.png" alt="해*님 썸네일">
+                    </div>
+                    <div class="gallery-info">
+                        <div class="gallery-title">해*님</div>
+                        <div class="gallery-desc">VSF</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- 4. 문의 양식 섹션 -->
+    <div class="section-block">
+        <div class="intro-section">
+            <div class="section-header-title">문의 양식</div>
+        </div>
+        <div class="inquiry-box">
+            <div class="form-group">
+                <label class="form-label" id="label-nickname">닉네임 · 방송국 링크</label>
+                <textarea id="input-nickname" class="form-textarea nickname-textarea" placeholder="데뷔 전이신 경우, 예정 닉네임 · 데뷔 날짜 · 활동 플랫폼을 기재해주세요"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="label-content">신청 내용</label>
+                <textarea id="input-content" class="form-textarea" placeholder="ex) 와루도 패키지 마누카로 진행 원합니다"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="label-discord">디스코드 사용 여부</label>
+                <input type="text" id="input-discord" class="form-input" placeholder="미사용 시, 작업물 수령용 이메일 주소를 기재해주세요">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="label-agreement">필독 사항 및 환불 규정에 동의하십니까?</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="radio" name="agreement" value="예"> 예
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="radio" name="agreement" value="아니오"> 아니오
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" id="label-extra">추가 문의사항</label>
+                <textarea id="input-extra" class="form-textarea" placeholder=""></textarea>
+            </div>
+
+            <div class="inquiry-links">
+                <button type="button" class="inquiry-btn" onclick="copyInquiryForm()">문의 양식 복사하기</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- 팝업 모달 -->
+<div class="image-modal" id="imageModal" onclick="closePortfolioModal()">
+    <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+        <button class="modal-close-btn" onclick="closePortfolioModal()">×</button>
+        <div class="modal-video-preparing">
+            페이셜 영상 준비 중입니다.
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyInquiryForm() {
+        const nickLabel = document.getElementById('label-nickname').innerText;
+        const nickVal = document.getElementById('input-nickname').value || document.getElementById('input-nickname').placeholder;
+
+        const contentLabel = document.getElementById('label-content').innerText;
+        const contentVal = document.getElementById('input-content').value || document.getElementById('input-content').placeholder;
+
+        const discordLabel = document.getElementById('label-discord').innerText;
+        const discordVal = document.getElementById('input-discord').value || document.getElementById('input-discord').placeholder;
+
+        const agreementLabel = document.getElementById('label-agreement').innerText;
+        const checkedAgreement = document.querySelector('input[name="agreement"]:checked');
+        const agreementVal = checkedAgreement ? checkedAgreement.value : "미선택";
+
+        const extraLabel = document.getElementById('label-extra').innerText;
+        const extraVal = document.getElementById('input-extra').value || "(없음)";
+
+        const resultText = 
+`1. ${nickLabel}
+- ${nickVal}
+
+2. ${contentLabel}
+- ${contentVal}
+
+3. ${discordLabel}
+- ${discordVal}
+
+4. ${agreementLabel}
+- ${agreementVal}
+
+5. ${extraLabel}
+- ${extraVal}`;
+
+        navigator.clipboard.writeText(resultText).then(() => {
+            alert('문의 양식이 복사되었습니다!');
+        }).catch(err => {
+            alert('복사에 실패했습니다. 브라우저 권한을 확인해주세요.');
+        });
+    }
+
+    function filterPortfolio(category, btn) {
+        const grid = document.getElementById('portfolioGrid');
+        const items = grid.getElementsByClassName('gallery-item');
+        const buttons = btn.parentElement.getElementsByClassName('tab-btn');
+
+        for (let b of buttons) {
+            b.classList.remove('active');
+        }
+        btn.classList.add('active');
+
+        for (let item of items) {
+            if (category === 'all' || item.getAttribute('data-category') === category) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+    }
+
+    function filterPersonalSold(category, btn) {
+        const grid = document.getElementById('personalSoldGrid');
+        const items = grid.getElementsByClassName('gallery-item');
+        const buttons = btn.parentElement.getElementsByClassName('tab-btn');
+
+        for (let b of buttons) {
+            b.classList.remove('active');
+        }
+        btn.classList.add('active');
+
+        for (let item of items) {
+            if (category === 'all' || item.getAttribute('data-category') === category) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+    }
+
+    function openPortfolioModal() {
+        document.getElementById('imageModal').classList.add('active');
+    }
+
+    function closePortfolioModal() {
+        document.getElementById('imageModal').classList.remove('active');
+    }
+
+    const scrollContainers = document.querySelectorAll('.scrollable-gallery-container');
+    
+    scrollContainers.forEach(container => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        container.addEventListener('mousedown', (e) => {
+            isDown = true;
+            container.classList.add('active');
+            startX = e.pageX - container.offsetLeft;
+            scrollLeft = container.scrollLeft;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isDown = false;
+            container.classList.remove('active');
+        });
+
+        container.addEventListener('mouseup', () => {
+            isDown = false;
+            container.classList.remove('active');
+        });
+
+        container.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const walk = (x - startX) * 2;
+            container.scrollLeft = scrollLeft - walk;
+        });
+
+        container.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                container.scrollLeft += e.deltaY;
+            }
+        }, { passive: false });
+    });
+</script>
+
+</body>
+</html>
