@@ -31,7 +31,8 @@
         
         .wrapper {
             width: 100%;
-            max-width: 1200px;
+            max-width: 780px;
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 45px;
@@ -85,11 +86,11 @@
         .intro-desc {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             font-family: 'Pretendard', sans-serif;
-            font-size: 14.5px;
-            color: #475569;
-            font-weight: 600;
+            font-size: 15.5px;
+            color: #000000;
+            font-weight: 700;
             margin-top: 4px;
         }
 
@@ -1016,11 +1017,27 @@
 5. ${extraLabel}
 - ${extraVal}`;
 
-        navigator.clipboard.writeText(resultText).then(() => {
-            alert('문의 양식이 복사되었습니다!');
-        }).catch(err => {
-            alert('복사에 실패했습니다. 브라우저 권한을 확인해주세요.');
-        });
+        // 아이프레임 환경 대응 복사 로직
+        const textarea = document.createElement("textarea");
+        textarea.value = resultText;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                alert('문의 양식이 복사되었습니다!');
+            } else {
+                alert('복사에 실패했습니다.');
+            }
+        } catch (err) {
+            alert('복사 기능을 지원하지 않는 브라우저입니다.');
+        }
+
+        document.body.removeChild(textarea);
     }
 
     function filterPortfolio(category, btn) {
