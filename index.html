@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 모바일에서도 PC 화면 그대로 축소되어 보이도록 1000px 고정 -->
+    <meta name="viewport" content="width=1000">
     <title>메인 박스 레이아웃</title>
     <!-- Pretendard 및 영문 필기체(Caveat) 폰트 불러오기 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
@@ -450,17 +451,6 @@
             align-items: stretch;
         }
 
-        @media (max-width: 850px) {
-            .workflow-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        @media (max-width: 500px) {
-            .workflow-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         .workflow-card {
             background-color: #ffffff;
             border: 1px solid #d2d9f4 !important;
@@ -862,17 +852,6 @@
             align-items: start;
         }
 
-        @media (max-width: 900px) {
-            .card-container-box5 {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-        @media (max-width: 700px) {
-            .card-container-box5 {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
         .sample-card-box5 {
             width: 100%;
             min-width: 0;
@@ -1246,7 +1225,53 @@
             font-weight: 600;
         }
 
-        /* --- 모달 스타일 (브라우저 전체 고정 및 박스 위치 연동) --- */
+        /* --- 동기화 패널 박스 스타일 --- */
+        .sync-panel-box {
+            width: 100%;
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sync-panel-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #334155;
+        }
+        .sync-panel-btns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .sync-btn {
+            padding: 8px 14px;
+            background-color: #475569;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .sync-btn:hover {
+            background-color: #334155;
+        }
+        .sync-textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            font-size: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        /* --- 모달 스타일 --- */
         .slider-modal-overlay {
             display: none;
             position: fixed;
@@ -1333,7 +1358,6 @@
             display: block;
         }
 
-        /* 화살표 위치 고정 */
         .modal-nav-arrow {
             position: absolute;
             top: 50%;
@@ -1635,6 +1659,16 @@
 
                 <div class="card-container" id="cardContainerBox7"></div>
             </div>
+
+            <!-- PC/모바일 수동 동기화 패널 (관리자 모드일 때만 표시) -->
+            <div class="sync-panel-box" id="syncPanelBox" style="display:none;">
+                <div class="sync-panel-title">⚙️ 데이터 동기화 관리 (PC ↔ 모바일)</div>
+                <div class="sync-panel-btns">
+                    <button class="sync-btn" onclick="exportDataString()">PC 데이터 내보내기 (복사)</button>
+                </div>
+                <textarea class="sync-textarea" id="syncTextarea" placeholder="모바일에서 여기에 코드를 붙여넣은 뒤 아래 적용하기를 누르세요"></textarea>
+                <button class="sync-btn" onclick="importDataString()" style="background-color:#059669;">모바일에 데이터 붙여넣기 & 적용</button>
+            </div>
         </div>
     </div>
 
@@ -1657,7 +1691,6 @@
     <!-- 비포/에프터 & 영상 비교 모달 팝업 -->
     <div class="slider-modal-overlay" id="sliderModal" onclick="closeSliderModal(event)">
         <div class="slider-modal-content" id="sliderModalContent" onclick="event.stopPropagation()">
-            <!-- 왼쪽 화살표 -->
             <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
             
             <div class="slider-modal-header">
@@ -1690,65 +1723,16 @@
             
             <div class="slider-guide-text" id="sliderGuideText">가운데 선을 좌우로 드래그해서 비교해 보세요</div>
 
-            <!-- 오른쪽 화살표 -->
             <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
         </div>
     </div>
 
     <script>
-        // 클라우드 동기화를 위한 설정 (JSONBin.io 무료 API 활용 예시)
-        const CLOUD_CONFIG = {
-            binId: "YOUR_BIN_ID_HERE", 
-            apiKey: "YOUR_MASTER_KEY_HERE"
-        };
-
-        let cloudDataStore = {};
-
-        async function fetchCloudData() {
-            if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") {
-                return;
-            }
-            try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}/latest`, {
-                    headers: { 'X-Master-Key': CLOUD_CONFIG.apiKey }
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    cloudDataStore = result.record || {};
-                }
-            } catch (e) {
-                console.error("클라우드 데이터 로드 실패", e);
-            }
-        }
-
-        async function saveCloudData() {
-            if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") return;
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': CLOUD_CONFIG.apiKey
-                    },
-                    body: JSON.stringify(cloudDataStore)
-                });
-            } catch (e) {
-                console.error("클라우드 데이터 저장 실패", e);
-            }
-        }
-
         const safeStorage = {
             getItem(key) {
-                if (CLOUD_CONFIG.binId !== "YOUR_BIN_ID_HERE" && cloudDataStore[key] !== undefined) {
-                    return cloudDataStore[key];
-                }
                 try { return localStorage.getItem(key); } catch (e) { return window._memoryStorage?.[key] || null; }
             },
             setItem(key, val) {
-                if (CLOUD_CONFIG.binId !== "YOUR_BIN_ID_HERE") {
-                    cloudDataStore[key] = val;
-                    saveCloudData();
-                }
                 try {
                     localStorage.setItem(key, val);
                 } catch (e) {
@@ -1757,6 +1741,44 @@
                 }
             }
         };
+
+        // 수동 동기화 기능 함수들
+        function exportDataString() {
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('artmug_')) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            }
+            const jsonStr = JSON.stringify(allData);
+            const encoded = btoa(encodeURIComponent(jsonStr));
+            const textarea = document.getElementById('syncTextarea');
+            textarea.value = encoded;
+            textarea.select();
+            document.execCommand('copy');
+            alert("PC 데이터가 클립보드에 복사되었습니다! 모바일 페이지의 동기화 칸에 붙여넣기 하세요.");
+        }
+
+        function importDataString() {
+            const textarea = document.getElementById('syncTextarea');
+            const val = textarea.value.trim();
+            if (!val) {
+                alert("적용할 데이터를 입력(붙여넣기)해주세요.");
+                return;
+            }
+            try {
+                const jsonStr = decodeURIComponent(atob(val));
+                const allData = JSON.parse(jsonStr);
+                for (const key in allData) {
+                    localStorage.setItem(key, allData[key]);
+                }
+                alert("모바일에 데이터가 성공적으로 적용되었습니다! 새로고침합니다.");
+                location.reload();
+            } catch (e) {
+                alert("데이터 형식이 올바르지 않습니다. 코드를 다시 확인해주세요.");
+            }
+        }
 
         let isAdmin = safeStorage.getItem('artmug_is_admin') === 'true';
         let currentFilters = {
@@ -2769,8 +2791,10 @@
         function updateAdminModeUI() {
             if (isAdmin) {
                 document.body.classList.add('admin-mode');
+                document.getElementById('syncPanelBox').style.display = 'flex';
             } else {
                 document.body.classList.remove('admin-mode');
+                document.getElementById('syncPanelBox').style.display = 'none';
             }
             renderAccordionItems();
             renderWorkflowItems();
@@ -2836,10 +2860,9 @@
                 }
             } else {
                 if (confirm("관리자 모드를 해제하시겠습니까?")) {
-                    saveCloudData();
                     isAdmin = false;
                     safeStorage.setItem('artmug_is_admin', 'false');
-                    alert("관리자 모드가 해제되고 변경 사항이 저장되었습니다.");
+                    alert("관리자 모드가 해제되었습니다.");
                     updateAdminModeUI();
                 }
             }
@@ -2901,12 +2924,7 @@
             }
         }
 
-        async function initApp() {
-            await fetchCloudData();
-            loadProfileData();
-        }
-
-        initApp();
+        loadProfileData();
     </script>
 
 </body>
