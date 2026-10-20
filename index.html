@@ -1259,16 +1259,16 @@
             font-weight: 600;
         }
 
-        /* --- 모달 스타일 --- */
+        /* --- 모달 스타일 (수정됨: fixed 대신 absolute 사용 및 iframe 내 눈높이 맞춤 대응) --- */
         .slider-modal-overlay {
             display: none;
-            position: fixed;
+            position: absolute; /* fixed -> absolute로 변경하여 페이지 상단 기준 고정 */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(15, 23, 42, 0.75);
-            z-index: 1000;
+            z-index: 3000; /* 다른 요소들보다 확실히 위로 오도록 설정 */
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -1347,7 +1347,7 @@
         }
 
         .modal-nav-arrow {
-            position: fixed;
+            position: absolute; /* fixed -> absolute로 변경하여 모달 오버레이 내부에서 위치 제어 */
             top: 50%;
             transform: translateY(-50%);
             background-color: #ffffff;
@@ -1362,7 +1362,7 @@
             font-size: 1.3rem;
             font-weight: 700;
             cursor: pointer;
-            z-index: 1010;
+            z-index: 3010;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
             transition: all 0.2s;
         }
@@ -1371,13 +1371,8 @@
             color: #1e293b;
             transform: translateY(-50%) scale(1.08);
         }
-        .modal-arrow-left { left: calc(50% - 370px); }
-        .modal-arrow-right { right: calc(50% - 370px); }
-
-        @media (max-width: 800px) {
-            .modal-arrow-left { left: 20px; }
-            .modal-arrow-right { right: 20px; }
-        }
+        .modal-arrow-left { left: 15px; }
+        .modal-arrow-right { right: 15px; }
 
         .comparison-slider-container {
             position: relative;
@@ -2351,6 +2346,7 @@
             container.appendChild(addCardPlaceholder);
         }
 
+        // 수정된 모달 열기 함수: 현재 보고 있는 화면의 스크롤 위치를 감지해 그 눈높이 중앙에 정확히 띄움
         function openSliderModal(beforeUrl, afterUrl, videoUrl) {
             const modal = document.getElementById('sliderModal');
             const beforeElem = document.getElementById('modalImgBefore');
@@ -2365,6 +2361,15 @@
             
             setupVideoContent(videoUrl);
             updateSliderPosition(50);
+
+            // 현재 브라우저의 스크롤 위치와 창 높이를 계산하여 모달 위치 및 높이 설정
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            
+            modal.style.position = 'absolute';
+            modal.style.top = currentScroll + 'px';
+            modal.style.height = windowHeight + 'px';
+
             modal.classList.add('open');
         }
 
@@ -2795,6 +2800,25 @@
                 safeStorage.setItem(`artmug_box${boxNum}_${type}`, newText.trim());
             }
         }
+
+        // iframe 높이 자동 조절 함수 (부모 페이지로 전송)
+        function sendHeight() {
+            var body = document.body;
+            var html = document.documentElement;
+            var height = Math.max(
+                body.scrollHeight, html.scrollHeight,
+                body.offsetHeight, html.offsetHeight,
+                body.clientHeight, html.clientHeight
+            ) + 100;
+            window.parent.postMessage({ height: height }, '*');
+        }
+
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+        document.addEventListener('click', function() {
+            setTimeout(sendHeight, 200);
+        });
+        setInterval(sendHeight, 800);
 
         loadProfileData();
     </script>
