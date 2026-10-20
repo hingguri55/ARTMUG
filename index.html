@@ -1259,18 +1259,16 @@
             font-weight: 600;
         }
 
-        /* --- 모달 스타일 (수정됨: fixed 고정 및 화살표 모달 상자 안쪽 배치) --- */
+        /* --- 모달 스타일 (수정됨: fixed 대신 absolute 사용 및 iframe 내 눈높이 맞춤 대응) --- */
         .slider-modal-overlay {
             display: none;
-            position: fixed;
+            position: absolute; /* fixed -> absolute로 변경하여 페이지 상단 기준 고정 */
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background-color: rgba(15, 23, 42, 0.75);
-            z-index: 99999;
+            z-index: 3000; /* 다른 요소들보다 확실히 위로 오도록 설정 */
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -1348,25 +1346,24 @@
             display: block;
         }
 
-        /* 화살표 버튼 위치 수정: 모달 상자 안쪽 좌우에 깔끔하게 붙도록 설정 */
         .modal-nav-arrow {
-            position: absolute;
+            position: absolute; /* fixed -> absolute로 변경하여 모달 오버레이 내부에서 위치 제어 */
             top: 50%;
             transform: translateY(-50%);
             background-color: #ffffff;
             border: 1px solid #cbd5e1;
             color: #0f172a;
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             cursor: pointer;
             z-index: 3010;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
             transition: all 0.2s;
         }
         .modal-nav-arrow:hover {
@@ -1374,8 +1371,8 @@
             color: #1e293b;
             transform: translateY(-50%) scale(1.08);
         }
-        .modal-arrow-left { left: 10px; }
-        .modal-arrow-right { right: 10px; }
+        .modal-arrow-left { left: 15px; }
+        .modal-arrow-right { right: 15px; }
 
         .comparison-slider-container {
             position: relative;
@@ -1666,11 +1663,9 @@
 
     <!-- 비포/에프터 & 영상 비교 모달 팝업 -->
     <div class="slider-modal-overlay" id="sliderModal" onclick="closeSliderModal(event)">
+        <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
+        
         <div class="slider-modal-content" onclick="event.stopPropagation()">
-            <!-- 화살표 버튼을 모달 상자 안으로 배치하여 깨짐 방지 -->
-            <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
-            <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
-
             <div class="slider-modal-header">
                 <button class="slider-modal-close" onclick="closeSliderModal()">×</button>
             </div>
@@ -1701,6 +1696,8 @@
             
             <div class="slider-guide-text" id="sliderGuideText">가운데 선을 좌우로 드래그해서 비교해 보세요</div>
         </div>
+
+        <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
     </div>
 
     <script>
@@ -2349,7 +2346,7 @@
             container.appendChild(addCardPlaceholder);
         }
 
-        // 안정화된 모달 열기 함수 (화면 중앙 정렬)
+        // 수정된 모달 열기 함수: 현재 보고 있는 화면의 스크롤 위치를 감지해 그 눈높이 중앙에 정확히 띄움
         function openSliderModal(beforeUrl, afterUrl, videoUrl) {
             const modal = document.getElementById('sliderModal');
             const beforeElem = document.getElementById('modalImgBefore');
@@ -2364,6 +2361,14 @@
             
             setupVideoContent(videoUrl);
             updateSliderPosition(50);
+
+            // 현재 브라우저의 스크롤 위치와 창 높이를 계산하여 모달 위치 및 높이 설정
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            
+            modal.style.position = 'absolute';
+            modal.style.top = currentScroll + 'px';
+            modal.style.height = windowHeight + 'px';
 
             modal.classList.add('open');
         }
