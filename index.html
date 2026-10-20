@@ -1259,19 +1259,17 @@
             font-weight: 600;
         }
 
-        /* --- 모달 스타일 --- */
+        /* --- 모달 스타일 (브라우저 전체 고정 및 6번 박스 위치 연동) --- */
         .slider-modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-color: rgba(15, 23, 42, 0.75);
             z-index: 1000;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            align-items: flex-start;
+            overflow-y: auto;
+            padding: 40px 20px;
         }
 
         .slider-modal-overlay.open {
@@ -1288,6 +1286,8 @@
             flex-direction: column;
             position: relative;
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+            margin-top: 40px; /* JS에서 6번 박스 위치에 맞게 동적 조정됨 */
+            margin-bottom: auto;
         }
 
         .slider-modal-header {
@@ -1346,8 +1346,9 @@
             display: block;
         }
 
+        /* 화살표 위치 고정 */
         .modal-nav-arrow {
-            position: fixed;
+            position: absolute;
             top: 50%;
             transform: translateY(-50%);
             background-color: #ffffff;
@@ -1371,12 +1372,12 @@
             color: #1e293b;
             transform: translateY(-50%) scale(1.08);
         }
-        .modal-arrow-left { left: calc(50% - 370px); }
-        .modal-arrow-right { right: calc(50% - 370px); }
+        .modal-arrow-left { left: -60px; }
+        .modal-arrow-right { right: -60px; }
 
         @media (max-width: 800px) {
-            .modal-arrow-left { left: 20px; }
-            .modal-arrow-right { right: 20px; }
+            .modal-arrow-left { left: 10px; }
+            .modal-arrow-right { right: 10px; }
         }
 
         .comparison-slider-container {
@@ -1668,9 +1669,10 @@
 
     <!-- 비포/에프터 & 영상 비교 모달 팝업 -->
     <div class="slider-modal-overlay" id="sliderModal" onclick="closeSliderModal(event)">
-        <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
-        
-        <div class="slider-modal-content" onclick="event.stopPropagation()">
+        <div class="slider-modal-content" id="sliderModalContent" onclick="event.stopPropagation()">
+            <!-- 왼쪽 화살표 -->
+            <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
+            
             <div class="slider-modal-header">
                 <button class="slider-modal-close" onclick="closeSliderModal()">×</button>
             </div>
@@ -1700,9 +1702,10 @@
             </div>
             
             <div class="slider-guide-text" id="sliderGuideText">가운데 선을 좌우로 드래그해서 비교해 보세요</div>
-        </div>
 
-        <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
+            <!-- 오른쪽 화살표 -->
+            <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
+        </div>
     </div>
 
     <script>
@@ -1889,6 +1892,7 @@
             updateAdminModeUI();
         }
 
+        // 이미지 즉시 프리로드 및 캐싱 강화로 로딩 속도 향상
         function preloadAllImages() {
             const profileImgSrc = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             if (profileImgSrc && profileImgSrc.trim() !== '' && !profileImgSrc.includes('placeholder.com')) {
@@ -2353,9 +2357,21 @@
 
         function openSliderModal(beforeUrl, afterUrl, videoUrl) {
             const modal = document.getElementById('sliderModal');
+            const modalContent = document.getElementById('sliderModalContent');
+            const box6 = document.getElementById('box-6');
             const beforeElem = document.getElementById('modalImgBefore');
             const afterElem = document.getElementById('modalImgAfter');
             
+            // 6번 박스 위치를 기준으로 상단 여백을 동적 계산하여 정확히 6번 박스 영역에 위치하도록 설정
+            if (box6) {
+                const boxRect = box6.getBoundingClientRect();
+                const absoluteTop = boxRect.top + window.pageYOffset;
+                // 페이지 상단에서 6번 박스 부근까지 자연스럽게 내려오도록 설정
+                modalContent.style.marginTop = `${Math.max(20, absoluteTop - 120)}px`;
+            } else {
+                modalContent.style.marginTop = '40px';
+            }
+
             currentModalData = { beforeUrl, afterUrl, videoUrl };
             currentModalView = 'comparison';
             updateModalViewDisplay();
