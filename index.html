@@ -2836,7 +2836,6 @@
                 }
             } else {
                 if (confirm("관리자 모드를 해제하시겠습니까?")) {
-                    // 해제 시점에 명시적으로 최종 서버 저장 수행
                     saveCloudData();
                     isAdmin = false;
                     safeStorage.setItem('artmug_is_admin', 'false');
