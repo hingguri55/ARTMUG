@@ -3,1128 +3,2801 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>통합 커미션 포트폴리오</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    <link href="https://hangeul.pstatic.net/hangeul_static/css/aggro.css" rel="stylesheet">
+    <title>메인 박스 레이아웃</title>
+    <!-- Pretendard 및 영문 필기체(Caveat) 폰트 불러오기 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        :root {
-            --bg-color: #ffffff;          
-            --border-color: #e2e8f0;      
-            --text-color: #000000;
-            --accent-blue-light: #bae6fd; 
-            --window-title-color: #000000;
-            --portfolio-secondary: #64748b;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        body { 
-            font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif !important; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            padding: 40px 20px; 
+        body {
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            padding: 40px 20px;
             min-height: 100vh;
         }
-        
-        .wrapper {
+
+        .main-wrapper {
             width: 100%;
             max-width: 1000px;
-            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 45px;
+            align-items: center;
         }
 
-        .section-block {
+        /* --- 큰 박스들 영역 --- */
+        .boxes-container {
             display: flex;
             flex-direction: column;
-            gap: 24px;
-        }
-
-        .section-divider {
+            gap: 20px;
             width: 100%;
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 5px 0;
         }
 
-        .section-header-title {
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--window-title-color);
-            letter-spacing: -0.5px;
-            margin-bottom: 2px;
-            display: inline-block;
+        .large-box {
+            width: 100%;
+            min-height: 350px;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .large-box:hover {
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
+        }
+
+        #box-3 {
+            min-height: auto;
+            justify-content: flex-start;
+            padding-bottom: 36px;
+        }
+
+        /* --- 관리자 모드 순서 변경 컨트롤 바 --- */
+        .box-order-controls {
+            display: none;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        body.admin-mode .box-order-controls {
+            display: flex;
+        }
+
+        .order-btn {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            font-size: 0.75rem;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .order-btn:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        /* --- 프로필 박스 스타일 --- */
+        .profile-content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
             position: relative;
         }
-        
-        .section-header-title::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 2px;
-            width: 100%;
-            height: 10px;
-            background-color: var(--accent-blue-light);
-            z-index: -1;
-            opacity: 0.75;
-            border-radius: 2px;
-        }
 
-        .intro-section {
+        .profile-img-container {
+            width: 130px;
+            height: 130px;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 24px;
+            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 0 4px;
-            align-items: flex-start;
-        }
-
-        .intro-desc {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-family: 'Pretendard', sans-serif;
-            font-size: 15.5px;
-            color: #000000;
-            font-weight: 700;
-            margin-top: 4px;
-        }
-
-        /* 필독 사항 박스 스타일 */
-        .notice-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px; 
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            font-family: 'Pretendard', sans-serif;
-            font-size: 16px; 
-            font-weight: 600;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-
-        .notice-item {
-            display: flex;
-            flex-direction: column;
-            gap: 6px; 
-        }
-
-        .notice-item-tight {
-            display: flex;
-            flex-direction: column;
-            gap: 0px; 
-        }
-
-        .notice-sub {
-            color: #1e293b; 
-            font-size: 15.5px; 
-            font-weight: 600;
-        }
-
-        .notice-highlight {
-            color: #dc2626;
-            font-size: 13.5px; 
-            font-weight: 600;
-            margin-top: -2px;  
-            display: block;    
-        }
-
-        /* 작업 과정 스타일 */
-        .process-container {
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
-            width: 100%;
-            gap: 12px;
-        }
-
-        .process-item {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 20px 12px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            text-align: center;
             justify-content: center;
-            gap: 12px;
-            flex: 1;
-            min-width: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(15, 23, 42, 0.03);
+            margin-bottom: 16px;
+            position: relative;
         }
 
-        .process-item:hover {
-            border-color: #bae6fd;
-            box-shadow: 0 4px 12px rgba(186, 230, 253, 0.2);
+        body.admin-mode .profile-img-container {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        body.admin-mode .profile-img-container:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(15, 23, 42, 0.06);
+            border-color: #0f172a;
         }
 
-        .process-step {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #e0f2fe;
-            color: #0369a1;
-            border: 1px solid #bae6fd;
-            border-radius: 50%;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            width: 28px;
-            height: 28px;
-            box-shadow: 0 2px 4px rgba(186, 230, 253, 0.3);
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .process-title {
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 14.5px;
+        .profile-name {
+            font-family: 'Caveat', cursive, sans-serif;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #0f172a;
-            word-break: keep-all;
-            line-height: 1.4;
-        }
-
-        .process-arrow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0284c7;
-            font-size: 20px;
-            font-weight: 800;
-            flex-shrink: 0;
-            width: 16px;
+            margin-bottom: 0px;
+            letter-spacing: 0.5px;
             text-align: center;
+            padding: 2px 10px;
+            cursor: pointer;
             user-select: none;
         }
 
-        /* 문의 양식 스타일 */
-        .inquiry-box {
-            background: #f8fafc;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 28px;
+        .profile-divider {
+            width: 28px;
+            height: 2px;
+            background-color: #586BCE;
+            margin: 14px auto 16px auto;
+            border-radius: 2px;
+        }
+
+        .profile-desc {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #334155;
+            line-height: 1.55;
+            word-break: keep-all;
+            text-align: center;
+            white-space: pre-line;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            max-width: 500px;
+        }
+        body.admin-mode .profile-desc {
+            cursor: pointer;
+        }
+        body.admin-mode .profile-desc:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* --- 공통 섹션 헤더 스타일 --- */
+        .box-header-area {
             display: flex;
             flex-direction: column;
-            gap: 22px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 6px;
+        }
+
+        .box-subtitle-en {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #586BCE;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 1px 0px;
+            transition: background-color 0.2s;
+            line-height: 1.2;
+        }
+        body.admin-mode .box-subtitle-en {
+            cursor: pointer;
+            padding: 1px 4px;
+            margin-left: -4px;
+            border-radius: 4px;
+        }
+        body.admin-mode .box-subtitle-en:hover {
+            background-color: #f1f5f9;
+            color: #4655B8;
+        }
+
+        .box-title-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            padding: 1px 0px;
+            transition: background-color 0.2s;
+            line-height: 1.2;
+        }
+        body.admin-mode .box-title-text {
+            cursor: pointer;
+            padding: 1px 4px;
+            margin-left: -4px;
+            border-radius: 4px;
+        }
+        body.admin-mode .box-title-text:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* --- 공통 안내 사항 스타일 --- */
+        .box-notice-desc {
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: #334155;
+            line-height: 1.6;
+            margin-top: 4px;
+            margin-bottom: 16px;
+            white-space: pre-line;
+            word-break: keep-all;
+            padding: 0px;
+            transition: background-color 0.2s;
+        }
+        body.admin-mode .box-notice-desc {
+            cursor: pointer;
+            padding: 4px 6px;
+            margin-left: -6px;
+            border-radius: 6px;
+        }
+        body.admin-mode .box-notice-desc:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* --- 메인 박스 2번 아코디언 상자 스타일 --- */
+        .accordion-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .accordion-item {
+            background-color: #ffffff;
+            border: 1px solid #d2d9f4;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .accordion-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(88, 107, 206, 0.1);
+            border-color: #b4c0ec;
+        }
+
+        body.admin-mode .accordion-item {
+            cursor: grab;
+        }
+        body.admin-mode .accordion-item:active {
+            cursor: grabbing;
+        }
+        .accordion-item.dragging {
+            opacity: 0.4;
+            border: 2px dashed #cbd5e1;
+        }
+
+        .accordion-item.open {
+            border-color: #b4c0ec;
+            box-shadow: 0 4px 12px rgba(88, 107, 206, 0.08);
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            user-select: none;
+            background-color: #ffffff;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: #f8fafc;
+        }
+
+        .accordion-item.open .accordion-header {
+            background-color: rgba(88, 107, 206, 0.08);
+        }
+
+        .accordion-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .accordion-num {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #334155 !important;
+            min-width: auto;
+        }
+
+        .accordion-item.open .accordion-num {
+            color: #334155 !important;
+        }
+
+        .accordion-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1e293b !important;
+        }
+
+        .accordion-item.open .accordion-title {
+            color: #1e293b !important;
+        }
+
+        body.admin-mode .accordion-title:hover {
+            background-color: rgba(203, 213, 225, 0.2);
+            border-radius: 4px;
+        }
+
+        .accordion-delete-btn {
+            display: none;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-left: auto;
+        }
+        body.admin-mode .accordion-delete-btn {
+            display: inline-block;
+        }
+        .accordion-delete-btn:hover {
+            background-color: #fecaca;
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background-color: #ffffff;
+            border-top: 0px solid #e2e8f0;
+            padding: 0 18px;
+            cursor: default;
+        }
+
+        .accordion-item.open .accordion-body {
+            max-height: 800px;
+            padding: 16px 18px;
+            border-top: 1px solid #d2d9f4;
+            background-color: #ffffff;
+        }
+
+        .accordion-content-text {
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.65;
+            white-space: pre-wrap;
+            word-break: normal;
+        }
+        
+        .accordion-content-text b,
+        .accordion-content-text strong {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .accordion-content-text .danger,
+        .accordion-content-text .warning,
+        .accordion-content-text red {
+            color: #e11d48;
+            font-weight: 600;
+        }
+
+        .accordion-content-text b.danger,
+        .accordion-content-text strong.danger {
+            color: #e11d48;
+            font-weight: 800;
+        }
+
+        body.admin-mode .accordion-content-text:hover {
+            background-color: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .accordion-add-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            color: #475569;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+        body.admin-mode .accordion-add-btn {
+            display: flex;
+        }
+        .accordion-add-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        /* --- 메인 박스 3번 (작업 과정) --- */
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            align-items: stretch;
+        }
+
+        @media (max-width: 850px) {
+            .workflow-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 500px) {
+            .workflow-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .workflow-card {
+            background-color: #ffffff;
+            border: 1px solid #d2d9f4 !important;
+            border-radius: 12px;
+            padding: 24px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+            min-height: 140px;
+            position: relative;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .workflow-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(88, 107, 206, 0.18);
+            border-color: #b4c0ec;
+            z-index: 5;
+        }
+
+        .workflow-circle-num {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            min-height: 28px;
+            border-radius: 50%;
+            background-color: #EEF1FD !important;
+            color: #586BCE !important;
+            border: 1px solid #D2D9F4 !important;
+            font-size: 0.85rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            user-select: none;
+        }
+
+        .workflow-card-title {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0f172a;
+            line-height: 1.35;
+            white-space: pre-line;
+            word-break: keep-all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        /* --- 커스텀 모달 스타일 --- */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.75);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .custom-modal-overlay.open {
+            display: flex;
+        }
+        .custom-modal-box {
+            background-color: #ffffff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
+        }
+        .custom-modal-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        
+        .editor-toolbar {
+            display: flex;
+            gap: 6px;
+            background-color: #f8fafc;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
+        .toolbar-btn {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toolbar-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        .toolbar-btn.btn-bold {
+            font-weight: 700;
+        }
+        .toolbar-btn.btn-danger {
+            color: #e11d48;
+            border-color: #fecaca;
+            background-color: #fff1f2;
+        }
+        .toolbar-btn.btn-danger:hover {
+            background-color: #fee2e2;
+        }
+
+        .custom-modal-textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #1e293b;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+        }
+        .custom-modal-textarea:focus {
+            border-color: #cbd5e1;
+            box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.3);
+        }
+        .custom-modal-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        .custom-modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .custom-modal-btn.cancel {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+        .custom-modal-btn.cancel:hover {
+            background-color: #e2e8f0;
+        }
+        .custom-modal-btn.confirm {
+            background-color: #475569;
+            color: #ffffff;
+        }
+        .custom-modal-btn.confirm:hover {
+            background-color: #334155;
+        }
+
+        /* --- 메인 박스 4번 (신청 양식) --- */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            margin-top: 8px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            width: 100%;
         }
 
         .form-label {
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 14.5px;
-            color: #1e293b;
+            font-size: 0.88rem;
             font-weight: 700;
-        }
-
-        .form-input, .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: #ffffff;
-            font-family: 'Pretendard', sans-serif;
-            font-size: 14px;
-            color: #0f172a;
-            transition: all 0.2s ease;
-            outline: none;
-        }
-
-        .form-input:focus, .form-textarea:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(186, 230, 253, 0.4);
+            color: #1e293b;
         }
 
         .form-textarea {
+            width: 100%;
+            min-height: 48px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #1e293b;
+            background-color: #ffffff;
             resize: vertical;
-            min-height: 90px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .form-textarea.nickname-textarea {
-            min-height: 60px;
+        .form-textarea:focus {
+            border-color: #cbd5e1;
+            box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.3);
         }
 
-        .checkbox-group {
+        .form-textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-textarea.tall {
+            min-height: 85px;
+        }
+
+        .radio-group {
             display: flex;
             gap: 20px;
             align-items: center;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
-        .checkbox-label {
+        .radio-label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-family: 'Pretendard', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: #1e293b;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .radio-label input[type="radio"] {
+            width: 15px;
+            height: 15px;
+            accent-color: #64748b;
             cursor: pointer;
         }
 
-        .checkbox-label input[type="radio"] {
-            accent-color: #0284c7;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .inquiry-links {
+        .form-btn-wrapper {
             display: flex;
             justify-content: flex-end;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
-        .inquiry-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 13.5px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            background: #f0f7ff;
-            color: #0f172a;
-            border: 1px solid #bae6fd;
-            cursor: pointer;
-            width: auto;
-            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.2);
-        }
-        .inquiry-btn:hover {
-            background: #e0f2fe;
-            color: #0284c7;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(186, 230, 253, 0.4);
+        /* 문의 양식 복사하기 버튼 */
+        .copy-form-btn {
+            padding: 9px 18px !important;
+            background-color: #EEF1FD !important;
+            color: #586BCE !important;
+            border: 1px solid #D2D9F4 !important;
+            border-radius: 8px !important;
+            font-size: 0.85rem !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 1px 3px rgba(88, 107, 206, 0.08) !important;
         }
 
-        .portfolio-tab-menu {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 4px;
+        .copy-form-btn:hover {
+            background-color: #E2E7FB !important;
+            border-color: #B4C0EC !important;
+            color: #4655B8 !important;
         }
 
-        .tab-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: #ffffff;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 13.5px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--portfolio-secondary);
-        }
-
-        .tab-btn:hover, .tab-btn.active {
-            background: #f0f7ff;
-            color: #0f172a;
-            border-color: #bae6fd;
-            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.3);
-        }
-
-        .avatar-tag-menu {
+        /* --- 5번 박스 탭 버튼 스타일 --- */
+        .badge-tags-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 4px;
+            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .avatar-tag-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid #bae6fd;
-            background: #f0f7ff;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 13.5px;
+        .static-pill-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 16px;
+            background-color: #EEF1FD !important;
+            border: 1px solid #D2D9F4 !important;
+            border-radius: 50px;
+            font-size: 0.85rem;
             font-weight: 700;
-            color: #0f172a;
-            box-shadow: 0 2px 6px rgba(186, 230, 253, 0.3);
-            cursor: default;
+            color: #586BCE !important;
+            box-shadow: 0 1px 2px rgba(88, 107, 206, 0.05);
+            user-select: none;
+            pointer-events: none;
+            transition: all 0.2s ease;
         }
 
-        .scrollable-gallery-container {
+        body.admin-mode .static-pill-badge {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+        body.admin-mode .static-pill-badge:hover {
+            background-color: #E2E7FB !important;
+            border-color: #B4C0EC !important;
+            color: #4655B8 !important;
+        }
+        body.admin-mode .static-pill-badge:hover::after {
+            content: ' ✕';
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+
+        .badge-add-btn {
+            display: none;
+            align-items: center;
+            padding: 6px 14px;
+            background-color: #EEF1FD;
+            color: #586BCE;
+            border: 1px solid #D2D9F4;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(88, 107, 206, 0.05);
+            transition: background-color 0.2s;
+        }
+        body.admin-mode .badge-add-btn {
+            display: inline-flex;
+        }
+        .badge-add-btn:hover {
+            background-color: #E2E7FB;
+            border-color: #B4C0EC;
+            color: #4655B8;
+        }
+
+        /* --- 필터 탭 스타일 --- */
+        .filter-tab-container {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 10px;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid #cbd5e1;
+            margin-bottom: 20px;
+            padding-bottom: 6px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 20px;
+        }
+
+        .filter-tab {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #94a3b8;
+            cursor: pointer;
+            padding-bottom: 6px;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .filter-tab.active {
+            color: #0f172a;
+        }
+
+        .filter-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 0;
             width: 100%;
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 #f1f5f9;
+            height: 2px;
+            background-color: #0f172a;
+            border-radius: 2px;
+        }
+
+        /* --- 카드 컨테이너 --- */
+        .card-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 14px;
+            align-items: flex-start;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 6px 4px 10px 4px; 
             cursor: grab;
             user-select: none;
-            -webkit-user-select: none;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
-        
-        .scrollable-gallery-container:active {
+
+        .card-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card-container:active {
             cursor: grabbing;
         }
 
-        .scrollable-gallery-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .scrollable-gallery-container::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
-        }
-        .scrollable-gallery-container::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .horizontal-grid {
+        .card-container-box5 {
             display: grid;
-            gap: 16px;
-            grid-auto-flow: column;
-            grid-auto-columns: 280px;
-            width: max-content;
-            padding: 4px 2px;
-        }
-
-        .gallery-item {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            width: 280px;
-        }
-        .gallery-item:hover {
-            transform: translateY(-3px);
-            border-color: #bae6fd;
-            box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.06);
-        }
-
-        .avatar-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             width: 100%;
-            padding: 4px 2px;
+            align-items: start;
         }
 
-        .avatar-item {
-            background: #ffffff;
-            border: 1px solid var(--border-color);
+        @media (max-width: 900px) {
+            .card-container-box5 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        @media (max-width: 700px) {
+            .card-container-box5 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .sample-card-box5 {
+            width: 100%;
+            min-width: 0;
+            aspect-ratio: 1 / 1;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
             display: flex;
             flex-direction: column;
-            transition: all 0.25s ease;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.02);
-        }
-        .avatar-item:hover {
-            transform: translateY(-2px);
-            border-color: #bae6fd;
-            box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .gallery-img-box {
+        .sample-card-box5:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(88, 107, 206, 0.1);
+            border-color: #cbd5e1;
+            z-index: 5;
+        }
+
+        .sample-card {
+            width: 200px;
+            min-width: 200px;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .sample-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(88, 107, 206, 0.1);
+            border-color: #cbd5e1;
+            z-index: 5;
+        }
+
+        .card-img-wrapper {
             width: 100%;
             aspect-ratio: 1 / 1;
-            overflow: hidden;
-            background: #f1f5f9;
             position: relative;
+            background-color: #f8fafc;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .gallery-img-box img {
+
+        .card-img-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             pointer-events: none;
         }
 
-        .status-badge {
+        .card-placeholder-text {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 배지 영역 스타일 */
+        .card-badge-group, .card-status-badge-group {
             position: absolute;
             top: 10px;
             left: 10px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            z-index: 2;
-            color: #000000;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            z-index: 5;
+            user-select: none;
         }
-        .badge-selling { background: #ecfdf5; border: 1px solid #a7f3d0; }
-        .badge-sold { background: #f1f5f9; border: 1px solid #cbd5e1; }
-        .badge-soop { background: #e0f2fe; border: 1px solid #bae6fd; color: #0284c7; }
-        .badge-chzzk { background: #ecfdf5; border: 1px solid #a7f3d0; color: #059669; }
 
-        .gallery-info {
-            padding: 12px 14px;
+        .badge-item, .status-badge-item {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 5px;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        body.admin-mode .badge-item, body.admin-mode .status-badge-item {
+            cursor: pointer;
+        }
+
+        .badge-item.inactive, .status-badge-item.inactive {
+            color: rgba(15, 23, 42, 0.35);
+            background-color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .badge-item.active-chzzk {
+            background-color: #d1fae5;
+            color: #065f46;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .badge-item.active-soop {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .status-badge-item.active-progress {
+            background-color: #d1fae5;
+            color: #065f46;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .status-badge-item.active-completed {
+            background-color: #fee2e2;
+            color: #991b1b;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        body:not(.admin-mode) .badge-item.inactive,
+        body:not(.admin-mode) .status-badge-item.inactive {
+            display: none;
+        }
+
+        /* 관리자 오버레이 */
+        .card-edit-action-area-box5 {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.55);
+            z-index: 5;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+        }
+
+        body.admin-mode .card-edit-action-area-box5 {
+            display: flex;
+        }
+
+        .box5-overlay-btn {
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+            transition: background-color 0.2s;
+        }
+
+        .box5-overlay-btn:hover {
+            background-color: #ffffff;
+        }
+
+        .box5-overlay-delete-btn {
+            background-color: rgba(239, 68, 68, 0.9);
+            color: #ffffff;
+        }
+        .box5-overlay-delete-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .card-edit-action-area {
+            display: none;
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            right: 6px;
+            z-index: 5;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+        body.admin-mode .card-edit-action-area {
+            display: flex;
+        }
+
+        .small-edit-btn {
+            background-color: #475569;
+            color: #ffffff;
+            border: none;
+            padding: 5px 2px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1 1 calc(50% - 2px);
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+            transition: background-color 0.2s;
+        }
+
+        .small-edit-btn:hover {
+            background-color: #334155;
+        }
+
+        .card-edit-action-area-box7 {
+            display: none;
+            position: absolute;
+            bottom: 6px;
+            left: 10px;
+            right: 10px;
+            z-index: 5;
+        }
+
+        body.admin-mode .card-edit-action-area-box7 {
+            display: block;
+        }
+
+        .card-info {
+            padding: 6px 10px;
             display: flex;
             flex-direction: column;
-            gap: 3px;
-        }
-        .gallery-title {
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--window-title-color);
-        }
-        .gallery-desc {
-            font-family: 'Pretendard', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--portfolio-secondary);
+            gap: 1px;
+            text-align: left;
         }
 
-        .image-modal {
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #0f172a;
+            padding: 1px 2px;
+            border-radius: 3px;
+            line-height: 1.2;
+        }
+
+        body.admin-mode .card-title {
+            cursor: pointer;
+        }
+        body.admin-mode .card-title:hover {
+            background-color: #f8fafc;
+        }
+
+        .card-sub {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #64748b;
+            padding: 1px 2px;
+            border-radius: 3px;
+            line-height: 1.2;
+        }
+
+        body.admin-mode .card-sub {
+            cursor: pointer;
+        }
+        body.admin-mode .card-sub:hover {
+            background-color: #f8fafc;
+        }
+
+        .card-admin-footer {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 8px;
+            border-top: 1px dashed #cbd5e1;
+            background-color: #ffffff;
+        }
+
+        body.admin-mode .card-admin-footer {
+            display: flex;
+        }
+
+        .tag-select-group {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tag-btn {
+            background-color: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tag-btn.active {
+            background-color: #475569;
+            color: #ffffff;
+            border-color: #475569;
+        }
+
+        .delete-card-btn {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .delete-card-btn:hover {
+            background-color: #dc2626;
+        }
+
+        .add-card-placeholder-box5 {
+            display: none;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        body.admin-mode .add-card-placeholder-box5 {
+            display: flex;
+        }
+
+        .add-card-placeholder-box5:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        .add-card-placeholder {
+            display: none;
+            width: 200px;
+            min-width: 200px;
+            height: 130px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            background-color: #f8fafc;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s ease;
+            user-select: none;
+            align-self: center;
+        }
+
+        body.admin-mode .add-card-placeholder {
+            display: flex;
+        }
+
+        .add-card-placeholder:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            color: #1e293b;
+        }
+
+        .add-card-icon {
+            font-size: 1.2rem;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .add-card-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* --- 모달 스타일 --- */
+        .slider-modal-overlay {
             display: none;
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.75);
             z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(6px);
-            justify-content: center; 
+            justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        .image-modal.active { display: flex; }
 
-        .modal-content-wrapper {
+        .slider-modal-overlay.open {
+            display: flex;
+        }
+
+        .slider-modal-content {
+            background-color: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            padding: 16px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            display: inline-flex; 
-            max-width: 90vw;
-            max-height: 90vh;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
         }
 
-        .modal-video-preparing {
-            background: #1e293b;
-            color: #94a3b8;
-            font-family: 'SBAggroB', 'Pretendard', sans-serif;
-            font-size: 16px;
-            padding: 60px 80px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #334155;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        .slider-modal-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 4px;
         }
 
-        .modal-close-btn {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: rgba(255, 255, 255, 0.2);
+        .slider-modal-close {
+            background: none;
             border: none;
-            color: #ffffff; 
+            font-size: 1.4rem;
+            color: #64748b;
             cursor: pointer;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            font-size: 18px;
-            font-weight: bold;
-            z-index: 1010;
-            transition: transform 0.2s ease, background 0.2s ease;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            line-height: 1;
         }
-        .modal-close-btn:hover { 
-            transform: scale(1.1); 
-            background: rgba(255, 255, 255, 0.4);
+
+        .slider-modal-close:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .modal-body-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-view-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-height: 60vh;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            overflow: hidden;
+            user-select: none;
+            box-shadow: inset 0 0 0 1px #cbd5e1;
+        }
+
+        .modal-view-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .modal-view-panel.active {
+            display: block;
+        }
+
+        .modal-nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 1010;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+            transition: all 0.2s;
+        }
+        .modal-nav-arrow:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            transform: translateY(-50%) scale(1.08);
+        }
+        .modal-arrow-left { left: calc(50% - 370px); }
+        .modal-arrow-right { right: calc(50% - 370px); }
+
+        @media (max-width: 800px) {
+            .modal-arrow-left { left: 20px; }
+            .modal-arrow-right { right: 20px; }
+        }
+
+        .comparison-slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: ew-resize;
+        }
+
+        .comparison-slider-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .img-after { z-index: 1; }
+        .img-before {
+            z-index: 2;
+            clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+        }
+
+        .slider-handle-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            background-color: #ffffff;
+            z-index: 10;
+            box-shadow: 0 0 8px rgba(15, 23, 42, 0.4);
+            pointer-events: none;
+            transform: translateX(-50%);
+        }
+
+        .slider-handle-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 36px;
+            height: 36px;
+            background-color: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #334155;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+            pointer-events: none;
+        }
+
+        .badge-before-label, .badge-after-label {
+            position: absolute;
+            top: 14px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            z-index: 5;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        .badge-before-label { left: 14px; color: #ffffff; }
+        .badge-after-label { right: 14px; color: #ffffff; }
+
+        .modal-video-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000000;
+        }
+        .modal-video-wrapper iframe, .modal-video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+        }
+        .modal-video-placeholder {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .slider-guide-text {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 12px;
+            font-weight: 500;
+            min-height: 20px;
         }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    
-    <!-- 필독 사항 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">필독 사항</div>
-        </div>
-        <div class="notice-box">
-            <div class="notice-item">원활한 작업 진행을 위해 결제 전 문의 부탁드립니다</div>
-            <div class="notice-item">모든 작업은 입금 순서에 따라 진행됩니다</div>
-            <div class="notice-item">사용 예정인 BOOTH 파츠가 방송 사용 가능한 아이템인지 사전에 확인해주세요</div>
-            <div class="notice-item-tight">
-                작업에 사용하는 모든 파츠는 의뢰자와 작가 양측 보유가 원칙으로<br>
-                작가가 보유하지 않은 파츠를 사용하실 경우, BOOTH 선물하기 기능을 통해 전달해주셔야합니다
-                <span class="notice-highlight">(해당 사항을 준수하지 않아 발생하는 문제에 대해 작가는 책임지지 않습니다)</span>
-            </div>
-            <div class="notice-item">페이셜 작업이 시작된 이후에는 성형 수정 및 얼굴 메이크업 텍스처 변경이 불가능 합니다</div>
-            <div class="notice-item-tight">
-                최종본 전달 후 3개월 이상 추가 작업이 없을 경우 작업 데이터는 정리과정에서 삭제될 수 있습니다
-                <div class="notice-sub">보관을 원하실 경우 유니티 패키지 구매를 권장드립니다</div>
-                <div class="notice-sub">유니티 패키지에는 FBX 파일이 포함되지 않습니다 (요청 시 별도 제공 가능)</div>
-            </div>
-            <div class="notice-item-tight">
-                완성된 작업물은 작가의 포트폴리오에 활용될 수 있습니다
-                <div class="notice-sub">비공개를 원하실 경우 포트폴리오 비공개 옵션을 선택해주세요</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- 0. 상단: 작업 과정 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">작업 과정</div>
-        </div>
-
-        <div class="process-container">
-            <div class="process-item">
-                <span class="process-step">01</span>
-                <div class="process-title">문의 및 상담</div>
-            </div>
-            <div class="process-arrow">›</div>
-            <div class="process-item">
-                <span class="process-step">02</span>
-                <div class="process-title">주문 및 결제</div>
-            </div>
-            <div class="process-arrow">›</div>
-            <div class="process-item">
-                <span class="process-step">03</span>
-                <div class="process-title">성형 작업 (1차 컨펌)</div>
-            </div>
-            <div class="process-arrow">›</div>
-            <div class="process-item">
-                <span class="process-step">04</span>
-                <div class="process-title">페이셜 작업 (2차 컨펌)</div>
-            </div>
-            <div class="process-arrow">›</div>
-            <div class="process-item">
-                <span class="process-step">05</span>
-                <div class="process-title">뚜따</div>
-            </div>
-            <div class="process-arrow">›</div>
-            <div class="process-item">
-                <span class="process-step">06</span>
-                <div class="process-title">최종 작업물 전달</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- 1. 보유 아바타 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">보유 아바타</div>
-        </div>
-
-        <div class="avatar-tag-menu">
-            <div class="avatar-tag-btn">마누카</div>
-            <div class="avatar-tag-btn">시나노</div>
-            <div class="avatar-tag-btn">시오</div>
-            <div class="avatar-tag-btn">루루네</div>
-            <div class="avatar-tag-btn">코마노</div>
-            <div class="avatar-tag-btn">키펠</div>
-        </div>
-
-        <div class="avatar-grid">
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A7%88%EB%88%84%EC%B9%B4.png" alt="마누카 썸네일">
-                </div>
-            </div>
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%8B%9C%EB%82%98%EB%85%B8.png" alt="시나노 썸네일">
-                </div>
-            </div>
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%8B%9C%EC%98%A4.png" alt="시오 썸네일">
-                </div>
-            </div>
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A3%A8%EB%A3%A8%EB%84%A4.png" alt="루루네 썸네일">
-                </div>
-            </div>
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%BD%94%EB%A7%88%EB%85%B8.png" alt="코마노 썸네일">
-                </div>
-            </div>
-            <div class="avatar-item">
-                <div class="gallery-img-box">
-                    <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%82%A4%ED%8E%A0.png" alt="키펠 썸네일">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- 2. 개인작 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">개인작</div>
-            <div class="intro-desc">
-                <div>- 개인작은 VSF 기준으로 제작됩니다 (Warudo 변환을 원하실 경우 별도 문의해 주세요)</div>
-                <div>- 눈동자 및 헤어 색상 변경이 가능합니다 (텍스처는 변경 불가)</div>
-            </div>
-        </div>
-
-        <div class="scrollable-gallery-container">
-            <div class="horizontal-grid">
-                <div class="gallery-item">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-selling">분양 중</span>
-                        <div class="image-preparing" style="font-family:'SBAggroB','Pretendard',sans-serif; font-size:13px; color:#94a3b8; font-weight:600;">이미지 준비중</div>
+    <div class="main-wrapper">
+        <div class="boxes-container" id="boxesContainer">
+            <!-- 메인 박스 1번 (프로필 고정) -->
+            <div class="large-box" id="box-1" style="min-height: auto;">
+                <div class="profile-content-wrapper">
+                    <div class="profile-img-container" id="profileImgBox" onclick="editProfileImage()">
+                        <div id="profileImgWrapper" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                            <!-- 프로필 이미지가 없을 때 동적으로 렌더링됨 -->
+                        </div>
                     </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">준비중</div>
-                        <div class="gallery-desc">-</div>
+                    <div class="profile-name" id="profileName" onclick="handleNameClick()" title="클릭하여 관리자 모드 설정">Hingguri55</div>
+                    <div class="profile-divider"></div>
+                    <div class="profile-desc" id="profileDesc" onclick="editProfileDesc()">소개를 작성해주세요</div>
+                </div>
+            </div>
+
+            <!-- 메인 박스 2번 (아코디언 토글 상자 영역) -->
+            <div class="large-box" id="box-2" data-box-id="2">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box2Sub" onclick="editBoxTitle(2, 'sub')">GUIDE</div>
+                    <div class="box-title-text" id="box2Title" onclick="editBoxTitle(2, 'title')">이용 안내 및 필독 사항</div>
+                </div>
+
+                <div class="accordion-container" id="accordionContainer"></div>
+                <button class="accordion-add-btn" onclick="addNewAccordionItem()">+ 상자 항목 추가하기</button>
+            </div>
+
+            <!-- 메인 박스 3번 (작업 과정) -->
+            <div class="large-box" id="box-3" data-box-id="3">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box3Sub" onclick="editBoxTitle(3, 'sub')">WORKFLOW</div>
+                    <div class="box-title-text" id="box3Title" onclick="editBoxTitle(3, 'title')">작업 과정</div>
+                </div>
+
+                <div class="workflow-grid" id="workflowContainer"></div>
+            </div>
+
+            <!-- 메인 박스 4번 (신청 양식) -->
+            <div class="large-box" id="box-4" data-box-id="4">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box4Sub" onclick="editBoxTitle(4, 'sub')">ORDER FORM</div>
+                    <div class="box-title-text" id="box4Title" onclick="editBoxTitle(4, 'title')">신청 양식</div>
+                </div>
+
+                <div class="form-container">
+                    <div class="form-group">
+                        <label class="form-label" for="formNickname">닉네임 · 방송국 링크</label>
+                        <textarea class="form-textarea" id="formNickname" placeholder="데뷔 전이신 경우, 예정 닉네임 · 데뷔 날짜 · 활동 플랫폼을 기재해주세요"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="formContent">신청 내용</label>
+                        <textarea class="form-textarea" id="formContent" placeholder="ex) 와루도 패키지 마누카로 진행 원합니다"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="formDiscord">디스코드 사용 여부</label>
+                        <textarea class="form-textarea" id="formDiscord" placeholder="미사용 시, 작업물 수령용 이메일 주소를 기재해주세요"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">필독 사항 및 환불 규정에 동의하십니까?</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="agreeRules" value="예"> 예
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="agreeRules" value="아니오"> 아니오
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="formExtra">추가 문의사항</label>
+                        <textarea class="form-textarea tall" id="formExtra"></textarea>
+                    </div>
+
+                    <div class="form-btn-wrapper">
+                        <button class="copy-form-btn" onclick="copyOrderForm()">문의 양식 복사하기</button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="portfolio-tab-menu" style="margin-top: 10px;">
-            <button class="tab-btn active" onclick="filterPersonalSold('all', this)">전체</button>
-            <button class="tab-btn" onclick="filterPersonalSold('manuka', this)">마누카</button>
-            <button class="tab-btn" onclick="filterPersonalSold('sinano', this)">시나노</button>
-        </div>
+            <!-- 메인 박스 5번 -->
+            <div class="large-box" id="box-5" data-box-id="5">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box5Sub" onclick="editBoxTitle(5, 'sub')">PORTFOLIO</div>
+                    <div class="box-title-text" id="box5Title" onclick="editBoxTitle(5, 'title')">포트폴리오</div>
+                </div>
 
-        <div class="scrollable-gallery-container">
-            <div class="horizontal-grid" id="personalSoldGrid">
-                <div class="gallery-item" data-category="manuka">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-sold">분양 완료</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(1).png" alt="개인작 01 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">개인작 01</div>
-                        <div class="gallery-desc">마누카</div>
+                <div class="box-notice-desc" id="box5NoticeDesc" onclick="editBox5Notice()">
+                    5번 박스 설명을 작성해주세요. (클릭하여 수정 가능)
+                </div>
+
+                <div class="badge-tags-container" id="box5BadgeTagsContainer">
+                    <button class="badge-add-btn" onclick="addBox5Badge()">+ 탭 추가</button>
+                </div>
+
+                <div class="card-container-box5" id="cardContainerBox5"></div>
+            </div>
+
+            <!-- 메인 박스 6번 (포트폴리오) -->
+            <div class="large-box" id="box-6" data-box-id="6">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box6Sub" onclick="editBoxTitle(6, 'sub')">PORTFOLIO</div>
+                    <div class="box-title-text" id="box6Title" onclick="editBoxTitle(6, 'title')">포트폴리오</div>
+                </div>
+
+                <div class="filter-tab-container">
+                    <div class="filter-tabs">
+                        <div class="filter-tab active" onclick="setFilter('box6', 'all', this)">전체</div>
+                        <div class="filter-tab" onclick="setFilter('box6', 'female', this)">여캐</div>
+                        <div class="filter-tab" onclick="setFilter('box6', 'male', this)">남캐</div>
                     </div>
                 </div>
-                <div class="gallery-item" data-category="manuka">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-sold">분양 완료</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(2).png" alt="개인작 02 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">개인작 02</div>
-                        <div class="gallery-desc">마누카</div>
+
+                <div class="card-container" id="cardContainerBox6"></div>
+            </div>
+
+            <!-- 메인 박스 7번 (분양 목록) -->
+            <div class="large-box" id="box-7" data-box-id="7">
+                <div class="box-order-controls">
+                    <button class="order-btn" onclick="moveBoxUp(this)" title="위로 이동">▲</button>
+                    <button class="order-btn" onclick="moveBoxDown(this)" title="아래로 이동">▼</button>
+                </div>
+                <div class="box-header-area">
+                    <div class="box-subtitle-en" id="box7Sub" onclick="editBoxTitle(7, 'sub')">ADOPTION</div>
+                    <div class="box-title-text" id="box7Title" onclick="editBoxTitle(7, 'title')">분양 목록</div>
+                </div>
+
+                <div class="box-notice-desc" id="box7NoticeDesc" onclick="editBox7Notice()">
+                    - 개인작은 VSF 기준으로 제작됩니다 (Warudo 변환을 원하실 경우 별도 문의해 주세요)
+                    - 눈동자 및 헤어 색상 변경이 가능합니다 (텍스처는 변경 불가)
+                </div>
+
+                <div class="filter-tab-container">
+                    <div class="filter-tabs">
+                        <div class="filter-tab active" onclick="setFilter('box7', 'progress', this)">분양 중</div>
+                        <div class="filter-tab" onclick="setFilter('box7', 'completed', this)">분양 완료</div>
                     </div>
                 </div>
-                <div class="gallery-item" data-category="sinano">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-sold">분양 완료</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(3).png" alt="개인작 03 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">개인작 03</div>
-                        <div class="gallery-desc">시나노</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="sinano">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-sold">분양 완료</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(4).png" alt="개인작 04 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">개인작 04</div>
-                        <div class="gallery-desc">시나노</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="sinano">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-sold">분양 완료</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EA%B0%9C%EC%9D%B8%EC%9E%91%20(5).png" alt="개인작 05 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">개인작 05</div>
-                        <div class="gallery-desc">시나노</div>
-                    </div>
-                </div>
+
+                <div class="card-container" id="cardContainerBox7"></div>
             </div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
-
-    <!-- 3. 포트폴리오 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">포트폴리오</div>
-        </div>
-
-        <div class="portfolio-tab-menu">
-            <button class="tab-btn active" onclick="filterPortfolio('all', this)">전체</button>
-            <button class="tab-btn" onclick="filterPortfolio('female', this)">여캐</button>
-            <button class="tab-btn" onclick="filterPortfolio('male', this)">남캐</button>
-        </div>
-
-        <div class="scrollable-gallery-container">
-            <div class="horizontal-grid" id="portfolioGrid">
-                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%8B%A8%EB%A7%9D%EC%B0%8C.png" alt="단망찌님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">단망찌님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A3%A8%EB%A5%B4.png" alt="루르님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">루르님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EB%A5%B4%EC%A0%95.png" alt="르*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">르*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/Manbok.png" alt="만*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">만*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%86%A1%EC%9B%8C%EB%9F%89.png" alt="송워량님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">송워량님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9D%B4%EB%88%84%ED%98%95.png" alt="이누형님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">이누형님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9A%94%EC%B0%8C.png" alt="요*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">요*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-soop">SOOP</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9A%94%EC%BD%94%EB%A7%81.png" alt="요코링님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">요코링님</div>
-                        <div class="gallery-desc">Warudo</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-soop">SOOP</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%9C%84%EB%8B%88%EC%97%98.png" alt="위**님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">위**님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%BF%A0%EC%8A%A4.png" alt="쿠*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">쿠*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="female" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%EC%B1%A0%EC%BD%94%EC%95%BC.png" alt="챠코야님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">챠코야님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%85%8*EC%96%80.png" alt="테*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">테*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%83%9C%ED%98%B8.png" alt="태호님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">태호님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
-                <div class="gallery-item" data-category="male" onclick="openPortfolioModal()">
-                    <div class="gallery-img-box">
-                        <span class="status-badge badge-chzzk">Chzzk</span>
-                        <img src="https://raw.githubusercontent.com/hingguri55/Portfolio-Thumbnail/main/%ED%95%B4%EA%B5%B0.png" alt="해*님 썸네일">
-                    </div>
-                    <div class="gallery-info">
-                        <div class="gallery-title">해*님</div>
-                        <div class="gallery-desc">VSF</div>
-                    </div>
-                </div>
+    <!-- 멀티라인 텍스트 수정 커스텀 모달 -->
+    <div class="custom-modal-overlay" id="customTextModal">
+        <div class="custom-modal-box">
+            <div class="custom-modal-title" id="customModalTitle">설명 내용 수정</div>
+            <div class="editor-toolbar">
+                <button type="button" class="toolbar-btn btn-bold" onclick="wrapTextWithTag('b')">굵게(B)</button>
+                <button type="button" class="toolbar-btn btn-danger" onclick="wrapTextWithTag('span', 'danger')">빨간색(위험)</button>
+            </div>
+            <textarea class="custom-modal-textarea" id="customModalTextarea" placeholder="원하는 글자를 마우스로 드래그(선택)한 뒤 위의 [굵게(B)] 또는 [빨간색(위험)] 버튼을 눌러보세요!"></textarea>
+            <div class="custom-modal-btns">
+                <button class="custom-modal-btn cancel" onclick="closeCustomModal(false)">취소</button>
+                <button class="custom-modal-btn confirm" onclick="closeCustomModal(true)">저장</button>
             </div>
         </div>
     </div>
 
-    <div class="section-divider"></div>
-
-    <!-- 4. 문의 양식 섹션 -->
-    <div class="section-block">
-        <div class="intro-section">
-            <div class="section-header-title">문의 양식</div>
-        </div>
-        <div class="inquiry-box">
-            <div class="form-group">
-                <label class="form-label" id="label-nickname">닉네임 · 방송국 링크</label>
-                <textarea id="input-nickname" class="form-textarea nickname-textarea" placeholder="데뷔 전이신 경우, 예정 닉네임 · 데뷔 날짜 · 활동 플랫폼을 기재해주세요"></textarea>
+    <!-- 비포/에프터 & 영상 비교 모달 팝업 -->
+    <div class="slider-modal-overlay" id="sliderModal" onclick="closeSliderModal(event)">
+        <button class="modal-nav-arrow modal-arrow-left" onclick="switchModalView(-1)">‹</button>
+        
+        <div class="slider-modal-content" onclick="event.stopPropagation()">
+            <div class="slider-modal-header">
+                <button class="slider-modal-close" onclick="closeSliderModal()">×</button>
             </div>
+            
+            <div class="modal-body-wrapper">
+                <div class="modal-view-container" id="sliderContainer">
+                    <div class="modal-view-panel active" id="panelComparison">
+                        <div class="badge-before-label">BEFORE</div>
+                        <div class="badge-after-label">AFTER</div>
+                        
+                        <div class="comparison-slider-container" id="comparisonInner" style="position:relative; width:100%; height:100%;">
+                            <img id="modalImgAfter" class="img-after" src="" alt="After" loading="eager">
+                            <img id="modalImgBefore" class="img-before" src="" alt="Before" loading="eager">
+                            
+                            <div class="slider-handle-line" id="sliderLine">
+                                <div class="slider-handle-button">↔</div>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label class="form-label" id="label-content">신청 내용</label>
-                <textarea id="input-content" class="form-textarea" placeholder="ex) 와루도 패키지 마누카로 진행 원합니다"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" id="label-discord">디스코드 사용 여부</label>
-                <input type="text" id="input-discord" class="form-input" placeholder="미사용 시, 작업물 수령용 이메일 주소를 기재해주세요">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" id="label-agreement">필독 사항 및 환불 규정에 동의하십니까?</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="radio" name="agreement" value="예"> 예
-                    </label>
-                    <label class="checkbox-label">
-                        <input type="radio" name="agreement" value="아니오"> 아니오
-                    </label>
+                    <div class="modal-view-panel" id="panelVideo">
+                        <div class="modal-video-wrapper" id="modalVideoContent">
+                            <div class="modal-video-placeholder">등록된 영상이 없습니다.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label class="form-label" id="label-extra">추가 문의사항</label>
-                <textarea id="input-extra" class="form-textarea" placeholder=""></textarea>
-            </div>
-
-            <div class="inquiry-links">
-                <button type="button" class="inquiry-btn" onclick="copyInquiryForm()">문의 양식 복사하기</button>
-            </div>
+            
+            <div class="slider-guide-text" id="sliderGuideText">가운데 선을 좌우로 드래그해서 비교해 보세요</div>
         </div>
+
+        <button class="modal-nav-arrow modal-arrow-right" onclick="switchModalView(1)">›</button>
     </div>
 
-</div>
+    <script>
+        const safeStorage = {
+            getItem(key) {
+                try { return localStorage.getItem(key); } catch (e) { return window._memoryStorage?.[key] || null; }
+            },
+            setItem(key, val) {
+                try {
+                    localStorage.setItem(key, val);
+                } catch (e) {
+                    if (!window._memoryStorage) window._memoryStorage = {};
+                    window._memoryStorage[key] = val;
+                }
+            }
+        };
 
-<!-- 팝업 모달 -->
-<div class="image-modal" id="imageModal" onclick="closePortfolioModal()">
-    <div class="modal-content-wrapper" onclick="event.stopPropagation()">
-        <button class="modal-close-btn" onclick="closePortfolioModal()">×</button>
-        <div class="modal-video-preparing">
-            페이셜 영상 준비 중입니다.
-        </div>
-    </div>
-</div>
+        let isAdmin = safeStorage.getItem('artmug_is_admin') === 'true';
+        let currentFilters = {
+            box6: 'all',
+            box7: 'progress'
+        };
 
-<script>
-    function copyInquiryForm() {
-        const nickLabel = document.getElementById('label-nickname').innerText;
-        const nickVal = document.getElementById('input-nickname').value || document.getElementById('input-nickname').placeholder;
+        let currentModalView = 'comparison';
+        let currentModalData = { beforeUrl: '', afterUrl: '', videoUrl: '' };
 
-        const contentLabel = document.getElementById('label-content').innerText;
-        const contentVal = document.getElementById('input-content').value || document.getElementById('input-content').placeholder;
+        let modalCallback = null;
 
-        const discordLabel = document.getElementById('label-discord').innerText;
-        const discordVal = document.getElementById('input-discord').value || document.getElementById('input-discord').placeholder;
+        function openCustomModal(title, initialText, callback) {
+            document.getElementById('customModalTitle').innerText = title;
+            const textarea = document.getElementById('customModalTextarea');
+            textarea.value = initialText || '';
+            document.getElementById('customTextModal').classList.add('open');
+            textarea.focus();
+            modalCallback = callback;
+        }
 
-        const agreementLabel = document.getElementById('label-agreement').innerText;
-        const checkedAgreement = document.querySelector('input[name="agreement"]:checked');
-        const agreementVal = checkedAgreement ? checkedAgreement.value : "미선택";
+        function closeCustomModal(isConfirm) {
+            const modal = document.getElementById('customTextModal');
+            modal.classList.remove('open');
+            if (isConfirm && modalCallback) {
+                const text = document.getElementById('customModalTextarea').value;
+                modalCallback(text);
+            }
+            modalCallback = null;
+        }
 
-        const extraLabel = document.getElementById('label-extra').innerText;
-        const extraVal = document.getElementById('input-extra').value || "(없음)";
+        function wrapTextWithTag(tag, className) {
+            const textarea = document.getElementById('customModalTextarea');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
 
-        const resultText = 
-`1. ${nickLabel}
-- ${nickVal}
+            if (!selectedText) {
+                alert("강조할 텍스트를 마우스로 드래그(선택)한 뒤 버튼을 눌러주세요!");
+                return;
+            }
 
-2. ${contentLabel}
-- ${contentVal}
+            let wrapped = '';
+            if (className) {
+                wrapped = `<${tag} class="${className}">${selectedText}</${tag}>`;
+            } else {
+                wrapped = `<${tag}>${selectedText}</${tag}>`;
+            }
 
-3. ${discordLabel}
-- ${discordVal}
+            textarea.value = textarea.value.substring(0, start) + wrapped + textarea.value.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + wrapped.length, start + wrapped.length);
+        }
 
-4. ${agreementLabel}
-- ${agreementVal}
+        const defaultProfile = {
+            img: '',
+            name: 'Hingguri55',
+            desc: '소개를 작성해주세요'
+        };
 
-5. ${extraLabel}
-- ${extraVal}`;
+        const defaultBox5Notice = '5번 박스 설명을 작성해주세요. (클릭하여 수정 가능)';
+        const defaultBox5Badges = ['마누카', '시나노', '시오', '루루네', '아이리', '코마노', '키펠'];
 
-        const textarea = document.createElement("textarea");
-        textarea.value = resultText;
-        textarea.style.position = "fixed";
-        textarea.style.opacity = "0";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
+        const defaultBox7Notice = `- 개인작은 VSF 기준으로 제작됩니다 (Warudo 변환을 원하실 경우 별도 문의해 주세요)
+- 눈동자 및 헤어 색상 변경이 가능합니다 (텍스처는 변경 불가)`;
 
+        const defaultBoxTitles = {
+            2: { sub: 'GUIDE', title: '이용 안내 및 필독 사항' },
+            3: { sub: 'WORKFLOW', title: '작업 과정' },
+            4: { sub: 'ORDER FORM', title: '신청 양식' },
+            5: { sub: 'PORTFOLIO', title: '포트폴리오' },
+            6: { sub: 'PORTFOLIO', title: '포트폴리오' },
+            7: { sub: 'ADOPTION', title: '분양 목록' }
+        };
+
+        const defaultAccordionData = [
+            { id: 'acc_1', title: '작업 안내', content: '• 원활한 작업 진행을 위해 결제 전 문의 부탁드립니다\n• 모든 작업은 입금 순서에 따라 진행됩니다\n• 사용 예정인 BOOTH 파츠가 방송 사용 가능한 아이템인지 사전에 확인해주세요\n• 작업에 사용하는 모든 파츠는 의뢰자와 작가 양측 보유가 원칙으로 작가가 보유하지 않은 파츠를 사용하실 경우, BOOTH 선물하기 기능을 통해 전달해주셔야합니다\n<span class="danger">(해당 사항을 준수하지 않아 발생하는 문제에 대해 작가는 책임지지 않습니다)</span>\n• <b>페이셜 작업이 시작된 이후에는 성형 수정 및 얼굴 메이크업 텍스처 변경이 불가능 합니다</b>' },
+            { id: 'acc_2', title: '작업물 및 파일', content: '• 전달되는 파일 및 작업물 형식에 대한 안내를 적어주세요.' },
+            { id: 'acc_3', title: '작업파일 보관', content: '• 파일 보관 기간 및 재발송 관련 안내를 적어주세요.' },
+            { id: 'acc_4', title: '포트폴리오', content: '• 포트폴리오 공개 여부 및 관련 안내를 적어주세요.' },
+            { id: 'acc_5', title: '작업 수정', content: '• 수정 횟수 및 수정 가능 범위에 대한 안내를 적어주세요.' }
+        ];
+
+        let accordionData;
         try {
-            const successful = document.execCommand('copy');
-            if (successful) {
-                alert('문의 양식이 복사되었습니다!');
+            accordionData = JSON.parse(safeStorage.getItem('artmug_accordion_data')) || defaultAccordionData;
+        } catch (e) {
+            accordionData = defaultAccordionData;
+        }
+
+        const defaultWorkflowData = [
+            { id: 'wf_1', title: '문의 및 상담' },
+            { id: 'wf_2', title: '주문 및 결제' },
+            { id: 'wf_3', title: '성형 작업\n(1차 컨펌)' },
+            { id: 'wf_4', title: '페이셜 작업\n(2차 컨펌)' },
+            { id: 'wf_5', title: '뚜따' },
+            { id: 'wf_6', title: '최종 작업물 전달' }
+        ];
+
+        let workflowData;
+        try {
+            workflowData = JSON.parse(safeStorage.getItem('artmug_workflow_data')) || defaultWorkflowData;
+        } catch (e) {
+            workflowData = defaultWorkflowData;
+        }
+
+        const defaultCardsBox5 = [{ id: 'card_5_1', mediaUrl: '' }];
+        const defaultCardsBox6 = [{ id: 'card_6_1', thumbnailUrl: '', beforeUrl: '', afterUrl: '', videoUrl: '', badge: 'Chzzk', title: '단망찌님', sub: 'VSF', category: 'female' }];
+        const defaultCardsBox7 = [{ id: 'card_7_1', mediaUrl: '', badge: '분양 중', title: '아바타 분양 1', sub: '상세 설명', category: 'progress' }];
+
+        let cardsDataBox5, cardsDataBox6, cardsDataBox7;
+        try {
+            cardsDataBox5 = JSON.parse(safeStorage.getItem('artmug_cards_box5')) || defaultCardsBox5;
+            cardsDataBox6 = JSON.parse(safeStorage.getItem('artmug_cards_box6')) || defaultCardsBox6;
+            cardsDataBox7 = JSON.parse(safeStorage.getItem('artmug_cards_box7')) || defaultCardsBox7;
+        } catch (e) {
+            cardsDataBox5 = defaultCardsBox5;
+            cardsDataBox6 = defaultCardsBox6;
+            cardsDataBox7 = defaultCardsBox7;
+        }
+
+        cardsDataBox6.forEach(c => {
+            if (c.mediaUrl && !c.thumbnailUrl) c.thumbnailUrl = c.mediaUrl;
+            if (!c.thumbnailUrl) c.thumbnailUrl = '';
+            if (!c.beforeUrl) c.beforeUrl = '';
+            if (!c.afterUrl) c.afterUrl = '';
+            if (!c.videoUrl) c.videoUrl = '';
+        });
+
+        function loadProfileData() {
+            const savedImg = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
+            const savedName = safeStorage.getItem('artmug_profile_name') || defaultProfile.name;
+            const savedDesc = safeStorage.getItem('artmug_profile_desc') || defaultProfile.desc;
+            const savedBox5Notice = safeStorage.getItem('artmug_box5_notice') || defaultBox5Notice;
+            const savedBox7Notice = safeStorage.getItem('artmug_box7_notice') || defaultBox7Notice;
+
+            const profileImgWrapper = document.getElementById('profileImgWrapper');
+            if (savedImg && savedImg.trim() !== '' && !savedImg.includes('placeholder.com')) {
+                profileImgWrapper.innerHTML = `<img id="profileImg" src="${savedImg}" alt="프로필 이미지" loading="eager" style="width:100%; height:100%; object-fit:cover;">`;
             } else {
-                alert('복사에 실패했습니다.');
+                profileImgWrapper.innerHTML = `<div class="card-placeholder-text">준비 중</div>`;
             }
-        } catch (err) {
-            alert('복사 기능을 지원하지 않는 브라우저입니다.');
+
+            document.getElementById('profileName').innerText = savedName;
+            document.getElementById('profileDesc').innerText = savedDesc;
+            document.getElementById('box5NoticeDesc').innerText = savedBox5Notice;
+            document.getElementById('box7NoticeDesc').innerText = savedBox7Notice;
+            
+            for (let i = 2; i <= 7; i++) {
+                const savedSub = safeStorage.getItem(`artmug_box${i}_sub`) || defaultBoxTitles[i].sub;
+                const savedTitle = safeStorage.getItem(`artmug_box${i}_title`) || defaultBoxTitles[i].title;
+                
+                const subElem = document.getElementById(`box${i}Sub`);
+                const titleElem = document.getElementById(`box${i}Title`);
+                
+                if (subElem) subElem.innerText = savedSub;
+                if (titleElem) titleElem.innerText = savedTitle;
+            }
+
+            renderAccordionItems();
+            renderWorkflowItems();
+            renderBox5Badges();
+            renderCards('box5');
+            renderCards('box6');
+            renderCards('box7');
+            preloadAllImages();
+            applySavedBoxOrder();
+            updateAdminModeUI();
         }
 
-        document.body.removeChild(textarea);
-    }
+        function preloadAllImages() {
+            const profileImgSrc = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
+            if (profileImgSrc && profileImgSrc.trim() !== '' && !profileImgSrc.includes('placeholder.com')) {
+                const pImg = new Image();
+                pImg.src = profileImgSrc;
+            }
 
-    function filterPortfolio(category, btn) {
-        const grid = document.getElementById('portfolioGrid');
-        const items = grid.getElementsByClassName('gallery-item');
-        const buttons = btn.parentElement.getElementsByClassName('tab-btn');
+            cardsDataBox5.forEach(card => {
+                if (card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com')) {
+                    const img = new Image();
+                    img.src = card.mediaUrl;
+                }
+            });
 
-        for (let b of buttons) {
-            b.classList.remove('active');
+            cardsDataBox6.forEach(card => {
+                if (card.thumbnailUrl && card.thumbnailUrl.trim() !== '' && !card.thumbnailUrl.includes('placeholder.com')) {
+                    const imgThumb = new Image();
+                    imgThumb.src = card.thumbnailUrl;
+                }
+                if (card.beforeUrl && card.beforeUrl.trim() !== '' && !card.beforeUrl.includes('placeholder.com')) {
+                    const imgBefore = new Image();
+                    imgBefore.src = card.beforeUrl;
+                }
+                if (card.afterUrl && card.afterUrl.trim() !== '' && !card.afterUrl.includes('placeholder.com')) {
+                    const imgAfter = new Image();
+                    imgAfter.src = card.afterUrl;
+                }
+            });
+
+            cardsDataBox7.forEach(card => {
+                if (card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com')) {
+                    const img7 = new Image();
+                    img7.src = card.mediaUrl;
+                }
+            });
         }
-        btn.classList.add('active');
 
-        for (let item of items) {
-            if (category === 'all' || item.getAttribute('data-category') === category) {
-                item.style.display = 'flex';
+        let draggedAccordionItem = null;
+
+        function renderAccordionItems() {
+            const container = document.getElementById('accordionContainer');
+            container.innerHTML = '';
+
+            accordionData.forEach((item, index) => {
+                const itemElem = document.createElement('div');
+                itemElem.className = 'accordion-item';
+                itemElem.id = item.id;
+                
+                if (isAdmin) {
+                    itemElem.setAttribute('draggable', 'true');
+                    
+                    itemElem.addEventListener('dragstart', (e) => {
+                        draggedAccordionItem = itemElem;
+                        itemElem.classList.add('dragging');
+                        e.dataTransfer.effectAllowed = 'move';
+                    });
+
+                    itemElem.addEventListener('dragend', () => {
+                        itemElem.classList.remove('dragging');
+                        draggedAccordionItem = null;
+                        updateAccordionOrderFromDOM();
+                    });
+
+                    itemElem.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        const targetItem = e.target.closest('.accordion-item');
+                        if (targetItem && targetItem !== draggedAccordionItem) {
+                            const rect = targetItem.getBoundingClientRect();
+                            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                            container.insertBefore(draggedAccordionItem, next ? targetItem.nextSibling : targetItem);
+                        }
+                    });
+                }
+
+                const numString = String(index + 1).padStart(2, '0');
+
+                itemElem.innerHTML = `
+                    <div class="accordion-header" onclick="toggleAccordion('${item.id}', event)">
+                        <div class="accordion-title-wrapper">
+                            <span class="accordion-num">${numString}</span>
+                            <div class="accordion-title" ${isAdmin ? `onclick="editAccordionTitle('${item.id}', event)" title="클릭하여 제목 수정"` : ''}>${item.title}</div>
+                        </div>
+                        <button class="accordion-delete-btn" onclick="deleteAccordionItem('${item.id}', event)">삭제</button>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="accordion-content-text" ${isAdmin ? `onclick="editAccordionContent('${item.id}', event)" title="클릭하여 내용 수정"` : ''}>${item.content}</div>
+                    </div>
+                `;
+                container.appendChild(itemElem);
+            });
+        }
+
+        function updateAccordionOrderFromDOM() {
+            const container = document.getElementById('accordionContainer');
+            const itemElems = Array.from(container.children);
+            const newOrderData = [];
+
+            itemElems.forEach(elem => {
+                const found = accordionData.find(i => i.id === elem.id);
+                if (found) newOrderData.push(found);
+            });
+
+            accordionData = newOrderData;
+            saveAccordionData();
+        }
+
+        function toggleAccordion(id, event) {
+            if (isAdmin && (event.target.classList.contains('accordion-title') || event.target.classList.contains('accordion-content-text'))) {
+                return;
+            }
+            const itemElem = document.getElementById(id);
+            if (itemElem) {
+                itemElem.classList.toggle('open');
+            }
+        }
+
+        function addNewAccordionItem() {
+            if (!isAdmin) return;
+            const newTitle = prompt("새 상자의 메인 내용(제목)을 입력하세요:");
+            if (newTitle !== null && newTitle.trim() !== "") {
+                const newId = 'acc_' + Date.now();
+                openCustomModal("펼쳐질 설명 내용 입력", "내용을 작성하세요.", (newContent) => {
+                    accordionData.push({
+                        id: newId,
+                        title: newTitle.trim(),
+                        content: newContent ? newContent.trim() : ""
+                    });
+                    saveAccordionData();
+                });
+            }
+        }
+
+        function editAccordionTitle(id, event) {
+            event.stopPropagation();
+            if (!isAdmin) return;
+            const item = accordionData.find(i => i.id === id);
+            if (!item) return;
+
+            const newTitle = prompt("변경할 메인 내용(제목)을 입력하세요:", item.title);
+            if (newTitle !== null && newTitle.trim() !== "") {
+                item.title = newTitle.trim();
+                saveAccordionData();
+            }
+        }
+
+        function editAccordionContent(id, event) {
+            event.stopPropagation();
+            if (!isAdmin) return;
+            const item = accordionData.find(i => i.id === id);
+            if (!item) return;
+
+            openCustomModal("설명 내용 수정", item.content, (newContent) => {
+                if (newContent !== null) {
+                    item.content = newContent.trim();
+                    saveAccordionData();
+                }
+            });
+        }
+
+        function deleteAccordionItem(id, event) {
+            event.stopPropagation();
+            if (!isAdmin) return;
+            if (confirm("이 상자를 삭제하시겠습니까?")) {
+                accordionData = accordionData.filter(i => i.id !== id);
+                saveAccordionData();
+            }
+        }
+
+        function saveAccordionData() {
+            safeStorage.setItem('artmug_accordion_data', JSON.stringify(accordionData));
+            renderAccordionItems();
+        }
+
+        function renderWorkflowItems() {
+            const container = document.getElementById('workflowContainer');
+            container.innerHTML = '';
+
+            workflowData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'workflow-card';
+                if (isAdmin) {
+                    card.setAttribute('title', '클릭하여 내용 수정');
+                    card.onclick = () => editWorkflowItem(item.id);
+                }
+
+                card.innerHTML = `
+                    <div class="workflow-circle-num">${index + 1}</div>
+                    <div class="workflow-card-title">${item.title}</div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function editWorkflowItem(id) {
+            if (!isAdmin) return;
+            const item = workflowData.find(w => w.id === id);
+            if (!item) return;
+
+            const newTitle = prompt("단계 제목 및 내용을 입력하세요 (줄바꿈 가능):", item.title);
+            if (newTitle !== null && newTitle.trim() !== "") {
+                item.title = newTitle.trim();
+                saveWorkflowData();
+            }
+        }
+
+        function saveWorkflowData() {
+            safeStorage.setItem('artmug_workflow_data', JSON.stringify(workflowData));
+            renderWorkflowItems();
+        }
+
+        function copyOrderForm() {
+            const nickname = document.getElementById('formNickname').value.trim();
+            const content = document.getElementById('formContent').value.trim();
+            const discord = document.getElementById('formDiscord').value.trim();
+            const agreeRadio = document.querySelector('input[name="agreeRules"]:checked');
+            const agree = agreeRadio ? agreeRadio.value : '';
+            const extra = document.getElementById('formExtra').value.trim();
+
+            const formText = `1. 닉네임 · 방송국 링크 : ${nickname}
+2. 신청 내용 : ${content}
+3. 디스코드 사용 여부 : ${discord}
+4. 필독 사항 및 환불 규정에 동의하십니까? : ${agree}
+5. 추가 문의사항 : ${extra}`;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(formText).then(() => {
+                    alert('문의 양식이 클립보드에 복사되었습니다!');
+                }).catch(() => {
+                    fallbackCopyTextToClipboard(formText);
+                });
             } else {
-                item.style.display = 'none';
+                fallbackCopyTextToClipboard(formText);
             }
         }
-    }
 
-    function filterPersonalSold(category, btn) {
-        const grid = document.getElementById('personalSoldGrid');
-        const items = grid.getElementsByClassName('gallery-item');
-        const buttons = btn.parentElement.getElementsByClassName('tab-btn');
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
 
-        for (let b of buttons) {
-            b.classList.remove('active');
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('문의 양식이 클립보드에 복사되었습니다!');
+                } else {
+                    alert('복사에 실패했습니다. 내용을 직접 드래그해서 복사해 주세요.');
+                }
+            } catch (err) {
+                alert('복사 기능을 지원하지 않는 브라우저 환경입니다.');
+            }
+
+            document.body.removeChild(textArea);
         }
-        btn.classList.add('active');
 
-        for (let item of items) {
-            if (category === 'all' || item.getAttribute('data-category') === category) {
-                item.style.display = 'flex';
+        function renderBox5Badges() {
+            const container = document.getElementById('box5BadgeTagsContainer');
+            const existingBadges = container.querySelectorAll('.static-pill-badge');
+            existingBadges.forEach(el => el.remove());
+
+            let badges;
+            try {
+                badges = JSON.parse(safeStorage.getItem('artmug_box5_badges')) || defaultBox5Badges;
+            } catch (e) {
+                badges = defaultBox5Badges;
+            }
+
+            badges.forEach((badgeText, index) => {
+                const pill = document.createElement('div');
+                pill.className = 'static-pill-badge';
+                pill.innerText = badgeText;
+                
+                if (isAdmin) {
+                    pill.onclick = () => handleBox5BadgeClick(index, badgeText);
+                }
+
+                const addBtn = container.querySelector('.badge-add-btn');
+                container.insertBefore(pill, addBtn);
+            });
+        }
+
+        function handleBox5BadgeClick(index, currentText) {
+            if (!isAdmin) return;
+            const action = prompt(`[${currentText}] 탭 관리:\n1. 수정하기 (새 이름 입력)\n2. 삭제하기 (빈 칸으로 두거나 취소)`, currentText);
+            
+            let badges;
+            try {
+                badges = JSON.parse(safeStorage.getItem('artmug_box5_badges')) || defaultBox5Badges;
+            } catch (e) {
+                badges = defaultBox5Badges;
+            }
+            
+            if (action === null) return;
+            
+            const trimmed = action.trim();
+            if (trimmed === "") {
+                if (confirm(`'${currentText}' 탭을 삭제하시겠습니까?`)) {
+                    badges.splice(index, 1);
+                }
             } else {
-                item.style.display = 'none';
+                badges[index] = trimmed;
+            }
+            
+            safeStorage.setItem('artmug_box5_badges', JSON.stringify(badges));
+            renderBox5Badges();
+        }
+
+        function addBox5Badge() {
+            if (!isAdmin) return;
+            let badges;
+            try {
+                badges = JSON.parse(safeStorage.getItem('artmug_box5_badges')) || defaultBox5Badges;
+            } catch (e) {
+                badges = defaultBox5Badges;
+            }
+            const newBadge = prompt("추가할 탭(배지) 이름을 입력하세요:");
+            if (newBadge !== null && newBadge.trim() !== "") {
+                badges.push(newBadge.trim());
+                safeStorage.setItem('artmug_box5_badges', JSON.stringify(badges));
+                renderBox5Badges();
             }
         }
-    }
 
-    function openPortfolioModal() {
-        document.getElementById('imageModal').classList.add('active');
-    }
+        function setFilter(boxName, filterType, tabElem) {
+            currentFilters[boxName] = filterType;
+            const parentBox = tabElem.closest('.large-box');
+            parentBox.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+            tabElem.classList.add('active');
+            renderCards(boxName);
+        }
 
-    function closePortfolioModal() {
-        document.getElementById('imageModal').classList.remove('active');
-    }
+        function renderCards(boxName) {
+            const isBox5 = boxName === 'box5';
+            const isBox6 = boxName === 'box6';
+            const containerId = isBox5 ? 'cardContainerBox5' : (isBox6 ? 'cardContainerBox6' : 'cardContainerBox7');
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
 
-    const scrollContainers = document.querySelectorAll('.scrollable-gallery-container');
-    
-    scrollContainers.forEach(container => {
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+            let currentData = isBox5 ? cardsDataBox5 : (isBox6 ? cardsDataBox6 : cardsDataBox7);
+            const currentFilter = currentFilters[boxName];
 
-        container.addEventListener('mousedown', (e) => {
-            isDown = true;
-            container.classList.add('active');
-            startX = e.pageX - container.offsetLeft;
-            scrollLeft = container.scrollLeft;
-        });
+            if (isBox6) {
+                currentData.sort((a, b) => a.title.localeCompare(b.title, 'ko'));
+            }
 
-        container.addEventListener('mouseleave', () => {
-            isDown = false;
-            container.classList.remove('active');
-        });
+            const filteredCards = currentData.filter(card => {
+                if (isBox5 || (isBox6 && currentFilter === 'all')) return true;
+                return card.category === currentFilter;
+            });
 
-        container.addEventListener('mouseup', () => {
-            isDown = false;
-            container.classList.remove('active');
-        });
+            filteredCards.forEach(card => {
+                const cardElem = document.createElement('div');
+                cardElem.className = isBox5 ? 'sample-card-box5' : 'sample-card';
 
-        container.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - container.offsetLeft;
-            const walk = (x - startX) * 2;
-            container.scrollLeft = scrollLeft - walk;
-        });
+                if (isBox6) {
+                    cardElem.onclick = (e) => {
+                        if (e.target.closest('.card-admin-footer') || e.target.closest('.card-edit-action-area') || e.target.closest('[onclick*="setPlatform"]')) return;
+                        openSliderModal(card.beforeUrl, card.afterUrl, card.videoUrl);
+                    };
+                }
 
-        container.addEventListener('wheel', (e) => {
-            if (e.deltaY !== 0) {
+                if (isBox5) {
+                    let mediaHtml = card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com') ? 
+                        `<img src="${card.mediaUrl}" alt="포트폴리오 이미지" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+
+                    cardElem.innerHTML = `
+                        <div class="card-img-wrapper" style="width:100%; height:100%;">
+                            ${mediaHtml}
+                            <div class="card-edit-action-area-box5">
+                                <button class="box5-overlay-btn" onclick="editCardImageBox5('${card.id}')">이미지 변경</button>
+                                <button class="box5-overlay-btn box5-overlay-delete-btn" onclick="deleteCard('${boxName}', '${card.id}', event)">항목 삭제</button>
+                            </div>
+                        </div>
+                    `;
+                } else if (isBox6) {
+                    const displayThumb = card.thumbnailUrl;
+                    let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
+                        `<img src="${displayThumb}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+
+                    const isChzzk = card.badge.toLowerCase() === 'chzzk';
+                    const chzzkClass = isChzzk ? 'active-chzzk' : 'inactive';
+                    const soopClass = !isChzzk ? 'active-soop' : 'inactive';
+
+                    cardElem.innerHTML = `
+                        <div class="card-img-wrapper">
+                            ${mediaHtml}
+                            <div class="card-badge-group">
+                                <span class="badge-item ${chzzkClass}" onclick="setPlatform('${boxName}', '${card.id}', 'Chzzk', event)">Chzzk</span>
+                                <span class="badge-item ${soopClass}" onclick="setPlatform('${boxName}', '${card.id}', 'SOOP', event)">SOOP</span>
+                            </div>
+                            <div class="card-edit-action-area">
+                                <button class="small-edit-btn" onclick="editCardImageBox6('${card.id}', 'thumb')">썸네일</button>
+                                <button class="small-edit-btn" onclick="editCardVideoUrl('${card.id}')">영상 변경</button>
+                                <button class="small-edit-btn" onclick="editCardImageBox6('${card.id}', 'before')">전(Before)</button>
+                                <button class="small-edit-btn" onclick="editCardImageBox6('${card.id}', 'after')">후(After)</button>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title" onclick="editCardText('${boxName}', '${card.id}', 'title', event)">${card.title}</div>
+                            <div class="card-sub" onclick="editCardText('${boxName}', '${card.id}', 'sub', event)">${card.sub}</div>
+                        </div>
+                        <div class="card-admin-footer">
+                            <div class="tag-select-group">
+                                <button class="tag-btn ${card.category === 'female' ? 'active' : ''}" onclick="setCardCategory('${boxName}', '${card.id}', 'female', event)">여캐</button>
+                                <button class="tag-btn ${card.category === 'male' ? 'active' : ''}" onclick="setCardCategory('${boxName}', '${card.id}', 'male', event)">남캐</button>
+                            </div>
+                            <button class="delete-card-btn" onclick="deleteCard('${boxName}', '${card.id}', event)">삭제</button>
+                        </div>
+                    `;
+                } else {
+                    let mediaHtml = card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com') ? 
+                        `<img src="${card.mediaUrl}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+
+                    const isProgress = card.badge === '분양 중';
+                    const progressClass = isProgress ? 'active-progress' : 'inactive';
+                    const completedClass = !isProgress ? 'active-completed' : 'inactive';
+
+                    cardElem.innerHTML = `
+                        <div class="card-img-wrapper">
+                            ${mediaHtml}
+                            <div class="card-status-badge-group">
+                                <span class="status-badge-item ${progressClass}" onclick="setStatusPlatform('${boxName}', '${card.id}', '분양 중', event)">분양 중</span>
+                                <span class="status-badge-item ${completedClass}" onclick="setStatusPlatform('${boxName}', '${card.id}', '분양 완료', event)">분양 완료</span>
+                            </div>
+                            <div class="card-edit-action-area-box7">
+                                <button class="small-edit-btn" onclick="editCardImageBox7('${card.id}')">이미지 변경</button>
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title" onclick="editCardText('${boxName}', '${card.id}', 'title', event)">${card.title}</div>
+                            <div class="card-sub" onclick="editCardText('${boxName}', '${card.id}', 'sub', event)">${card.sub}</div>
+                        </div>
+                        <div class="card-admin-footer">
+                            <div class="tag-select-group">
+                                <button class="tag-btn ${card.category === 'progress' ? 'active' : ''}" onclick="setCardCategory('${boxName}', '${card.id}', 'progress', event)">분양 중</button>
+                                <button class="tag-btn ${card.category === 'completed' ? 'active' : ''}" onclick="setCardCategory('${boxName}', '${card.id}', 'completed', event)">분양 완료</button>
+                            </div>
+                            <button class="delete-card-btn" onclick="deleteCard('${boxName}', '${card.id}', event)">삭제</button>
+                        </div>
+                    `;
+                }
+
+                container.appendChild(cardElem);
+            });
+
+            const addCardPlaceholder = document.createElement('div');
+            addCardPlaceholder.className = isBox5 ? 'add-card-placeholder-box5' : 'add-card-placeholder';
+            addCardPlaceholder.onclick = () => addNewCard(boxName);
+            addCardPlaceholder.innerHTML = `
+                <div class="add-card-icon">+</div>
+                <div class="add-card-text">${isBox5 ? '항목 추가' : (isBox6 ? '포트폴리오 추가' : '분양 항목 추가')}</div>
+            `;
+            container.appendChild(addCardPlaceholder);
+        }
+
+        function openSliderModal(beforeUrl, afterUrl, videoUrl) {
+            const modal = document.getElementById('sliderModal');
+            const beforeElem = document.getElementById('modalImgBefore');
+            const afterElem = document.getElementById('modalImgAfter');
+            
+            currentModalData = { beforeUrl, afterUrl, videoUrl };
+            currentModalView = 'comparison';
+            updateModalViewDisplay();
+
+            beforeElem.src = (beforeUrl && beforeUrl.trim() !== '') ? beforeUrl : 'https://via.placeholder.com/600?text=Before+Image+Ready';
+            afterElem.src = (afterUrl && afterUrl.trim() !== '') ? afterUrl : 'https://via.placeholder.com/600?text=After+Image+Ready';
+            
+            setupVideoContent(videoUrl);
+            updateSliderPosition(50);
+            modal.classList.add('open');
+        }
+
+        function closeSliderModal(e) {
+            if (!e || e.target.id === 'sliderModal' || e.target.classList.contains('slider-modal-close')) {
+                document.getElementById('sliderModal').classList.remove('open');
+                document.getElementById('modalVideoContent').innerHTML = '<div class="modal-video-placeholder">등록된 영상이 없습니다.</div>';
+            }
+        }
+
+        function switchModalView(direction) {
+            if (currentModalView === 'comparison') {
+                currentModalView = 'video';
+            } else {
+                currentModalView = 'comparison';
+            }
+            updateModalViewDisplay();
+        }
+
+        function updateModalViewDisplay() {
+            const panelComp = document.getElementById('panelComparison');
+            const panelVideo = document.getElementById('panelVideo');
+            const guideText = document.getElementById('sliderGuideText');
+
+            if (currentModalView === 'comparison') {
+                panelComp.classList.add('active');
+                panelVideo.classList.remove('active');
+                guideText.innerText = '가운데 선을 좌우로 드래그해서 비교해 보세요';
+            } else {
+                panelComp.classList.remove('active');
+                panelVideo.classList.add('active');
+                guideText.innerText = '';
+            }
+        }
+
+        function setupVideoContent(videoUrl) {
+            const videoContainer = document.getElementById('modalVideoContent');
+            if (!videoUrl || videoUrl.trim() === '') {
+                videoContainer.innerHTML = '<div class="modal-video-placeholder">등록된 영상이 없습니다.</div>';
+                return;
+            }
+
+            let embedHtml = '';
+            const trimmedUrl = videoUrl.trim();
+
+            if (trimmedUrl.includes('youtube.com') || trimmedUrl.includes('youtu.be')) {
+                let videoId = '';
+                if (trimmedUrl.includes('youtu.be/')) {
+                    videoId = trimmedUrl.split('youtu.be/')[1].split('?')[0];
+                } else if (trimmedUrl.includes('watch?v=')) {
+                    videoId = trimmedUrl.split('watch?v=')[1].split('&')[0];
+                } else if (trimmedUrl.includes('embed/')) {
+                    videoId = trimmedUrl.split('embed/')[1].split('?')[0];
+                }
+                if (videoId) {
+                    embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                }
+            } else if (trimmedUrl.match(/\.(mp4|webm|ogg)$/i) || trimmedUrl.startsWith('http')) {
+                embedHtml = `<video src="${trimmedUrl}" controls autoplay></video>`;
+            }
+
+            if (embedHtml) {
+                videoContainer.innerHTML = embedHtml;
+            } else {
+                videoContainer.innerHTML = `<div class="modal-video-placeholder"><a href="${trimmedUrl}" target="_blank" style="color:#64748b;">영상 링크 열기</a></div>`;
+            }
+        }
+
+        function updateSliderPosition(percent) {
+            const beforeImg = document.getElementById('modalImgBefore');
+            const sliderLine = document.getElementById('sliderLine');
+            if (percent < 0) percent = 0;
+            if (percent > 100) percent = 100;
+            
+            beforeImg.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+            sliderLine.style.left = `${percent}%`;
+        }
+
+        const comparisonInner = document.getElementById('comparisonInner');
+        comparisonInner.addEventListener('mousemove', (e) => { handleSliderMove(e); });
+        comparisonInner.addEventListener('touchmove', (e) => { handleSliderMove(e.touches[0]); }, { passive: true });
+
+        function handleSliderMove(e) {
+            if (currentModalView !== 'comparison') return;
+            const rect = comparisonInner.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            let percent = (x / rect.width) * 100;
+            updateSliderPosition(percent);
+        }
+
+        function setupContainerScroll(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                container.style.cursor = 'grabbing';
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('mouseleave', () => { isDown = false; container.style.cursor = 'grab'; });
+            container.addEventListener('mouseup', () => { isDown = false; container.style.cursor = 'grab'; });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
                 e.preventDefault();
-                container.scrollLeft += e.deltaY;
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                container.scrollLeft = scrollLeft - walk;
+            });
+
+            container.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    container.scrollBy({ left: e.deltaY * 1.2, behavior: 'smooth' });
+                }
+            }, { passive: false });
+        }
+
+        setupContainerScroll('cardContainerBox6');
+        setupContainerScroll('cardContainerBox7');
+
+        function saveCardsData(boxName) {
+            if (boxName === 'box5') {
+                safeStorage.setItem('artmug_cards_box5', JSON.stringify(cardsDataBox5));
+            } else if (boxName === 'box6') {
+                safeStorage.setItem('artmug_cards_box6', JSON.stringify(cardsDataBox6));
+            } else {
+                safeStorage.setItem('artmug_cards_box7', JSON.stringify(cardsDataBox7));
             }
-        }, { passive: false });
-    });
-</script>
+            renderCards(boxName);
+            preloadAllImages();
+        }
+
+        function addNewCard(boxName) {
+            if (!isAdmin) return;
+            const newId = 'card_' + boxName + '_' + Date.now();
+            
+            if (boxName === 'box5') {
+                cardsDataBox5.push({
+                    id: newId,
+                    mediaUrl: ''
+                });
+            } else if (boxName === 'box6') {
+                cardsDataBox6.push({
+                    id: newId,
+                    thumbnailUrl: '',
+                    beforeUrl: '',
+                    afterUrl: '',
+                    videoUrl: '',
+                    badge: 'Chzzk',
+                    title: '새 항목',
+                    sub: 'VSF',
+                    category: currentFilters[boxName]
+                });
+            } else {
+                cardsDataBox7.push({
+                    id: newId,
+                    mediaUrl: '',
+                    badge: currentFilters[boxName] === 'completed' ? '분양 완료' : '분양 중',
+                    title: '새 분양 항목',
+                    sub: '상세 설명',
+                    category: currentFilters[boxName]
+                });
+            }
+            saveCardsData(boxName);
+        }
+
+        function deleteCard(boxName, cardId, event) {
+            if (event) event.stopPropagation();
+            if (!isAdmin) return;
+            if (confirm("이 항목을 삭제하시겠습니까?")) {
+                if (boxName === 'box5') {
+                    cardsDataBox5 = cardsDataBox5.filter(c => c.id !== cardId);
+                } else if (boxName === 'box6') {
+                    cardsDataBox6 = cardsDataBox6.filter(c => c.id !== cardId);
+                } else {
+                    cardsDataBox7 = cardsDataBox7.filter(c => c.id !== cardId);
+                }
+                saveCardsData(boxName);
+            }
+        }
+
+        function setPlatform(boxName, cardId, platform, event) {
+            if (event) event.stopPropagation();
+            if (!isAdmin) return;
+            const card = cardsDataBox6.find(c => c.id === cardId);
+            if (card) {
+                card.badge = platform;
+                saveCardsData(boxName);
+            }
+        }
+
+        function setStatusPlatform(boxName, cardId, status, event) {
+            if (event) event.stopPropagation();
+            if (!isAdmin) return;
+            const card = cardsDataBox7.find(c => c.id === cardId);
+            if (card) {
+                card.badge = status;
+                card.category = (status === '분양 중' ? 'progress' : 'completed');
+                saveCardsData(boxName);
+            }
+        }
+
+        function editCardImageBox5(cardId) {
+            if (!isAdmin) return;
+            const card = cardsDataBox5.find(c => c.id === cardId);
+            if (!card) return;
+
+            const newUrl = prompt("변경할 이미지 URL을 입력하세요:", card.mediaUrl);
+            if (newUrl !== null) {
+                card.mediaUrl = newUrl.trim();
+                saveCardsData('box5');
+            }
+        }
+
+        function editCardImageBox6(cardId, type) {
+            if (!isAdmin) return;
+            const card = cardsDataBox6.find(c => c.id === cardId);
+            if (!card) return;
+
+            let targetKey = 'thumbnailUrl';
+            let label = '썸네일';
+            if (type === 'before') {
+                targetKey = 'beforeUrl';
+                label = '전(Before)';
+            } else if (type === 'after') {
+                targetKey = 'afterUrl';
+                label = '후(After)';
+            }
+
+            const newUrl = prompt(`변경할 ${label} 이미지 URL을 입력하세요:`, card[targetKey]);
+            if (newUrl !== null) {
+                card[targetKey] = newUrl.trim();
+                saveCardsData('box6');
+            }
+        }
+
+        function editCardVideoUrl(cardId) {
+            if (!isAdmin) return;
+            const card = cardsDataBox6.find(c => c.id === cardId);
+            if (!card) return;
+
+            const newUrl = prompt("연결할 영상 URL(유튜브 주소 또는 mp4 링크 등)을 입력하세요:", card.videoUrl || '');
+            if (newUrl !== null) {
+                card.videoUrl = newUrl.trim();
+                saveCardsData('box6');
+            }
+        }
+
+        function editCardImageBox7(cardId) {
+            if (!isAdmin) return;
+            const card = cardsDataBox7.find(c => c.id === cardId);
+            if (!card) return;
+
+            const newUrl = prompt("변경할 이미지 URL을 입력하세요:", card.mediaUrl);
+            if (newUrl !== null) {
+                card.mediaUrl = newUrl.trim();
+                saveCardsData('box7');
+            }
+        }
+
+        function editCardText(boxName, cardId, field, event) {
+            if (event) event.stopPropagation();
+            if (!isAdmin) return;
+            let currentData = boxName === 'box6' ? cardsDataBox6 : cardsDataBox7;
+            const card = currentData.find(c => c.id === cardId);
+            if (!card) return;
+
+            const currentText = card[field];
+            const newText = prompt(`변경할 ${field === 'title' ? '이름' : '설명'}을 입력하세요:`, currentText);
+
+            if (newText !== null && newText.trim() !== "") {
+                card[field] = newText.trim();
+                saveCardsData(boxName);
+            }
+        }
+
+        function setCardCategory(boxName, cardId, category, event) {
+            if (event) event.stopPropagation();
+            if (!isAdmin) return;
+            const currentData = boxName === 'box6' ? cardsDataBox6 : cardsDataBox7;
+            const card = currentData.find(c => c.id === cardId);
+            if (card) {
+                card.category = category;
+                if (boxName === 'box7') {
+                    card.badge = (category === 'progress' ? '분양 중' : '분양 완료');
+                }
+                saveCardsData(boxName);
+            }
+        }
+
+        function updateAdminModeUI() {
+            if (isAdmin) {
+                document.body.classList.add('admin-mode');
+            } else {
+                document.body.classList.remove('admin-mode');
+            }
+            renderAccordionItems();
+            renderWorkflowItems();
+        }
+
+        function saveBoxOrder() {
+            const containerElem = document.getElementById('boxesContainer');
+            const boxes = Array.from(containerElem.children);
+            const orderArray = boxes.map(box => box.id);
+            safeStorage.setItem('artmug_box_order', JSON.stringify(orderArray));
+        }
+
+        function applySavedBoxOrder() {
+            const savedOrder = safeStorage.getItem('artmug_box_order');
+            if (!savedOrder) return;
+
+            try {
+                const orderArray = JSON.parse(savedOrder);
+                const containerElem = document.getElementById('boxesContainer');
+                orderArray.forEach(id => {
+                    const elem = document.getElementById(id);
+                    if (elem) containerElem.appendChild(elem);
+                });
+            } catch (e) {
+                console.error("순서 정보 로드 실패:", e);
+            }
+        }
+
+        function moveBoxUp(btn) {
+            if (!isAdmin) return;
+            const currentBox = btn.closest('.large-box');
+            const prevBox = currentBox.previousElementSibling;
+
+            if (prevBox && prevBox.id !== 'box-1') {
+                const containerElem = document.getElementById('boxesContainer');
+                containerElem.insertBefore(currentBox, prevBox);
+                saveBoxOrder();
+            }
+        }
+
+        function moveBoxDown(btn) {
+            if (!isAdmin) return;
+            const currentBox = btn.closest('.large-box');
+            const nextBox = currentBox.nextElementSibling;
+
+            if (nextBox) {
+                const containerElem = document.getElementById('boxesContainer');
+                containerElem.insertBefore(nextBox, currentBox);
+                saveBoxOrder();
+            }
+        }
+
+        function handleNameClick() {
+            if (!isAdmin) {
+                const pwd = prompt("관리자 비밀번호를 입력하세요:");
+                if (pwd === "1234") {
+                    isAdmin = true;
+                    safeStorage.setItem('artmug_is_admin', 'true');
+                    alert("관리자 모드가 켜졌습니다!");
+                    updateAdminModeUI();
+                } else if (pwd !== null) {
+                    alert("비밀번호가 틀렸습니다.");
+                }
+            } else {
+                if (confirm("관리자 모드를 해제하시겠습니까?")) {
+                    isAdmin = false;
+                    safeStorage.setItem('artmug_is_admin', 'false');
+                    alert("관리자 모드가 해제되었습니다.");
+                    updateAdminModeUI();
+                }
+            }
+        }
+
+        function editProfileImage() {
+            if (!isAdmin) return;
+            const currentImg = safeStorage.getItem('artmug_profile_img') || '';
+            const newImg = prompt("변경할 프로필 이미지 URL을 입력하세요 (비우면 '준비 중' 표시):", currentImg);
+            if (newImg !== null) {
+                const trimmed = newImg.trim();
+                safeStorage.setItem('artmug_profile_img', trimmed);
+                loadProfileData();
+            }
+        }
+
+        function editProfileDesc() {
+            if (!isAdmin) return;
+            const currentDesc = document.getElementById('profileDesc').innerText;
+            const newDesc = prompt("변경할 소개글을 입력하세요 (줄바꿈 가능):", currentDesc);
+            if (newDesc !== null && newDesc.trim() !== "") {
+                document.getElementById('profileDesc').innerText = newDesc;
+                safeStorage.setItem('artmug_profile_desc', newDesc);
+            }
+        }
+
+        function editBox5Notice() {
+            if (!isAdmin) return;
+            const currentNotice = document.getElementById('box5NoticeDesc').innerText;
+            const newNotice = prompt("변경할 5번 박스 설명 문구를 입력하세요:", currentNotice);
+            if (newNotice !== null && newNotice.trim() !== "") {
+                document.getElementById('box5NoticeDesc').innerText = newNotice;
+                safeStorage.setItem('artmug_box5_notice', newNotice);
+            }
+        }
+
+        function editBox7Notice() {
+            if (!isAdmin) return;
+            const currentNotice = document.getElementById('box7NoticeDesc').innerText;
+            const newNotice = prompt("변경할 안내 사항을 입력하세요 (줄바꿈 가능):", currentNotice);
+            if (newNotice !== null && newNotice.trim() !== "") {
+                document.getElementById('box7NoticeDesc').innerText = newNotice;
+                safeStorage.setItem('artmug_box7_notice', newNotice);
+            }
+        }
+
+        function editBoxTitle(boxNum, type) {
+            if (!isAdmin) return;
+            const elemId = `box${boxNum}${type === 'sub' ? 'Sub' : 'Title'}`;
+            const elem = document.getElementById(elemId);
+            if (!elem) return;
+
+            const currentText = elem.innerText;
+            const newText = prompt(`변경할 ${type === 'sub' ? '영어 서브타이틀' : '제목'}을 입력하세요:`, currentText);
+            
+            if (newText !== null && newText.trim() !== "") {
+                elem.innerText = newText.trim();
+                safeStorage.setItem(`artmug_box${boxNum}_${type}`, newText.trim());
+            }
+        }
+
+        loadProfileData();
+    </script>
 
 </body>
 </html>
