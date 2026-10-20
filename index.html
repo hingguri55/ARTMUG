@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- 모바일에서도 PC 화면 그대로 축소되어 보이도록 1000px 고정 -->
-    <meta name="viewport" content="width=1000">
+    <!-- 모바일 및 PC 대응 반응형 뷰포트 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 박스 레이아웃</title>
     <!-- Pretendard 및 영문 필기체(Caveat) 폰트 불러오기 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.min.css">
@@ -440,7 +440,7 @@
             color: #1e293b;
         }
 
-        /* --- 메인 박스 3번 (작업 과정) --- */
+        /* --- 메인 박스 3번 (작업 과정 - 6열 원본 유지) --- */
         .workflow-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -844,6 +844,7 @@
             cursor: grabbing;
         }
 
+        /* --- 메인 박스 5번 (5열 원본 유지) --- */
         .card-container-box5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -1488,6 +1489,33 @@
             margin-top: 12px;
             font-weight: 500;
             min-height: 20px;
+        }
+
+        /* --- 모바일 전용 반응형 최적화 (모바일 기기에서만 작동) --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 15px 10px;
+            }
+            .large-box {
+                padding: 20px 15px;
+            }
+            /* 3번 박스 모바일에서 3열로 정렬하여 글자 잘림 방지 */
+            .workflow-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .workflow-card {
+                min-height: 110px;
+                padding: 14px 6px;
+            }
+            .workflow-card-title {
+                font-size: 0.75rem;
+            }
+            /* 5번 박스 모바일에서 적절한 크기로 조정 */
+            .card-container-box5 {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
         }
     </style>
 </head>
