@@ -1709,11 +1709,63 @@
     </div>
 
     <script>
+        // 클라우드 동기화를 위한 설정 (JSONBin.io 무료 API 활용 예시)
+        // 본인의 bin_id와 master_key를 아래에 입력하시면 PC와 모바일이 실시간 공유됩니다.
+        const CLOUD_CONFIG = {
+            binId: "YOUR_BIN_ID_HERE", 
+            apiKey: "YOUR_MASTER_KEY_HERE"
+        };
+
+        let cloudDataStore = {};
+
+        // 클라우드 서버에서 최신 데이터를 불러오는 함수
+        async function fetchCloudData() {
+            if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") {
+                // 클라우드가 설정되지 않은 경우 기존 localStorage 기반으로 동작
+                return;
+            }
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}/latest`, {
+                    headers: { 'X-Master-Key': CLOUD_CONFIG.apiKey }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    cloudDataStore = result.record || {};
+                }
+            } catch (e) {
+                console.error("클라우드 데이터 로드 실패", e);
+            }
+        }
+
+        // 클라우드 서버에 데이터를 저장(업데이트)하는 함수
+        async function saveCloudData() {
+            if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") return;
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${CLOUD_CONFIG.binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': CLOUD_CONFIG.apiKey
+                    },
+                    body: JSON.stringify(cloudDataStore)
+                });
+            } catch (e) {
+                console.error("클라우드 데이터 저장 실패", e);
+            }
+        }
+
         const safeStorage = {
             getItem(key) {
+                if (CLOUD_CONFIG.binId !== "YOUR_BIN_ID_HERE" && cloudDataStore[key] !== undefined) {
+                    return cloudDataStore[key];
+                }
                 try { return localStorage.getItem(key); } catch (e) { return window._memoryStorage?.[key] || null; }
             },
             setItem(key, val) {
+                if (CLOUD_CONFIG.binId !== "YOUR_BIN_ID_HERE") {
+                    cloudDataStore[key] = val;
+                    saveCloudData();
+                }
                 try {
                     localStorage.setItem(key, val);
                 } catch (e) {
@@ -2812,7 +2864,13 @@
             }
         }
 
-        loadProfileData();
+        // 페이지를 열 때 서버에서 최신 데이터를 먼저 불러온 뒤 화면을 그림
+        async function initApp() {
+            await fetchCloudData();
+            loadProfileData();
+        }
+
+        initApp();
     </script>
 
 </body>
