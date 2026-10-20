@@ -1087,19 +1087,6 @@
             background-color: #334155;
         }
 
-        .card-edit-action-area-box7 {
-            display: none;
-            position: absolute;
-            bottom: 6px;
-            left: 10px;
-            right: 10px;
-            z-index: 5;
-        }
-
-        body.admin-mode .card-edit-action-area-box7 {
-            display: block;
-        }
-
         .card-info {
             padding: 6px 10px;
             display: flex;
@@ -1259,7 +1246,7 @@
             font-weight: 600;
         }
 
-        /* --- 모달 스타일 (브라우저 전체 고정 및 6번 박스 위치 연동) --- */
+        /* --- 모달 스타일 (브라우저 전체 고정 및 박스 위치 연동) --- */
         .slider-modal-overlay {
             display: none;
             position: fixed;
@@ -1286,7 +1273,7 @@
             flex-direction: column;
             position: relative;
             box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
-            margin-top: 40px; /* JS에서 6번 박스 위치에 맞게 동적 조정됨 */
+            margin-top: 40px;
             margin-bottom: auto;
         }
 
@@ -1710,7 +1697,6 @@
 
     <script>
         // 클라우드 동기화를 위한 설정 (JSONBin.io 무료 API 활용 예시)
-        // 본인의 bin_id와 master_key를 아래에 입력하시면 PC와 모바일이 실시간 공유됩니다.
         const CLOUD_CONFIG = {
             binId: "YOUR_BIN_ID_HERE", 
             apiKey: "YOUR_MASTER_KEY_HERE"
@@ -1718,10 +1704,8 @@
 
         let cloudDataStore = {};
 
-        // 클라우드 서버에서 최신 데이터를 불러오는 함수
         async function fetchCloudData() {
             if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") {
-                // 클라우드가 설정되지 않은 경우 기존 localStorage 기반으로 동작
                 return;
             }
             try {
@@ -1737,7 +1721,6 @@
             }
         }
 
-        // 클라우드 서버에 데이터를 저장(업데이트)하는 함수
         async function saveCloudData() {
             if (CLOUD_CONFIG.binId === "YOUR_BIN_ID_HERE") return;
             try {
@@ -1882,7 +1865,7 @@
 
         const defaultCardsBox5 = [{ id: 'card_5_1', mediaUrl: '' }];
         const defaultCardsBox6 = [{ id: 'card_6_1', thumbnailUrl: '', beforeUrl: '', afterUrl: '', videoUrl: '', badge: 'Chzzk', title: '단망찌님', sub: 'VSF', category: 'female' }];
-        const defaultCardsBox7 = [{ id: 'card_7_1', mediaUrl: '', badge: '분양 중', title: '아바타 분양 1', sub: '상세 설명', category: 'progress' }];
+        const defaultCardsBox7 = [{ id: 'card_7_1', thumbnailUrl: '', beforeUrl: '', afterUrl: '', videoUrl: '', badge: '분양 중', title: '아바타 분양 1', sub: '상세 설명', category: 'progress' }];
 
         let cardsDataBox5, cardsDataBox6, cardsDataBox7;
         try {
@@ -1896,6 +1879,14 @@
         }
 
         cardsDataBox6.forEach(c => {
+            if (c.mediaUrl && !c.thumbnailUrl) c.thumbnailUrl = c.mediaUrl;
+            if (!c.thumbnailUrl) c.thumbnailUrl = '';
+            if (!c.beforeUrl) c.beforeUrl = '';
+            if (!c.afterUrl) c.afterUrl = '';
+            if (!c.videoUrl) c.videoUrl = '';
+        });
+
+        cardsDataBox7.forEach(c => {
             if (c.mediaUrl && !c.thumbnailUrl) c.thumbnailUrl = c.mediaUrl;
             if (!c.thumbnailUrl) c.thumbnailUrl = '';
             if (!c.beforeUrl) c.beforeUrl = '';
@@ -1944,7 +1935,6 @@
             updateAdminModeUI();
         }
 
-        // 이미지 즉시 프리로드 및 캐싱 강화로 로딩 속도 향상
         function preloadAllImages() {
             const profileImgSrc = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             if (profileImgSrc && profileImgSrc.trim() !== '' && !profileImgSrc.includes('placeholder.com')) {
@@ -1975,9 +1965,17 @@
             });
 
             cardsDataBox7.forEach(card => {
-                if (card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com')) {
-                    const img7 = new Image();
-                    img7.src = card.mediaUrl;
+                if (card.thumbnailUrl && card.thumbnailUrl.trim() !== '' && !card.thumbnailUrl.includes('placeholder.com')) {
+                    const imgThumb = new Image();
+                    imgThumb.src = card.thumbnailUrl;
+                }
+                if (card.beforeUrl && card.beforeUrl.trim() !== '' && !card.beforeUrl.includes('placeholder.com')) {
+                    const imgBefore = new Image();
+                    imgBefore.src = card.beforeUrl;
+                }
+                if (card.afterUrl && card.afterUrl.trim() !== '' && !card.afterUrl.includes('placeholder.com')) {
+                    const imgAfter = new Image();
+                    imgAfter.src = card.afterUrl;
                 }
             });
         }
@@ -2293,13 +2291,19 @@
             let currentData = isBox5 ? cardsDataBox5 : (isBox6 ? cardsDataBox6 : cardsDataBox7);
             const currentFilter = currentFilters[boxName];
 
-            if (isBox6) {
+            if (isBox6 || boxName === 'box7') {
                 currentData.sort((a, b) => a.title.localeCompare(b.title, 'ko'));
             }
 
             const filteredCards = currentData.filter(card => {
-                if (isBox5 || (isBox6 && currentFilter === 'all')) return true;
-                return card.category === currentFilter;
+                if (isBox5 || ((isBox6 || boxName === 'box7') && currentFilter === 'all' && isBox6)) return true;
+                if (boxName === 'box7' && (currentFilter === 'progress' || currentFilter === 'completed')) {
+                    return card.category === currentFilter;
+                }
+                if (isBox6 && currentFilter !== 'all') {
+                    return card.category === currentFilter;
+                }
+                return true;
             });
 
             filteredCards.forEach(card => {
@@ -2309,7 +2313,12 @@
                 if (isBox6) {
                     cardElem.onclick = (e) => {
                         if (e.target.closest('.card-admin-footer') || e.target.closest('.card-edit-action-area') || e.target.closest('[onclick*="setPlatform"]')) return;
-                        openSliderModal(card.beforeUrl, card.afterUrl, card.videoUrl);
+                        openSliderModal(card.beforeUrl, card.afterUrl, card.videoUrl, 'box-6');
+                    };
+                } else if (boxName === 'box7') {
+                    cardElem.onclick = (e) => {
+                        if (e.target.closest('.card-admin-footer') || e.target.closest('.card-edit-action-area') || e.target.closest('[onclick*="setStatusPlatform"]')) return;
+                        openSliderModal(card.beforeUrl, card.afterUrl, card.videoUrl, 'box-7');
                     };
                 }
 
@@ -2362,8 +2371,9 @@
                         </div>
                     `;
                 } else {
-                    let mediaHtml = card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com') ? 
-                        `<img src="${card.mediaUrl}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+                    const displayThumb = card.thumbnailUrl;
+                    let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
+                        `<img src="${displayThumb}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     const isProgress = card.badge === '분양 중';
                     const progressClass = isProgress ? 'active-progress' : 'inactive';
@@ -2376,8 +2386,11 @@
                                 <span class="status-badge-item ${progressClass}" onclick="setStatusPlatform('${boxName}', '${card.id}', '분양 중', event)">분양 중</span>
                                 <span class="status-badge-item ${completedClass}" onclick="setStatusPlatform('${boxName}', '${card.id}', '분양 완료', event)">분양 완료</span>
                             </div>
-                            <div class="card-edit-action-area-box7">
-                                <button class="small-edit-btn" onclick="editCardImageBox7('${card.id}')">이미지 변경</button>
+                            <div class="card-edit-action-area">
+                                <button class="small-edit-btn" onclick="editCardImageBox7('${card.id}', 'thumb')">썸네일</button>
+                                <button class="small-edit-btn" onclick="editCardVideoUrlBox7('${card.id}')">영상 변경</button>
+                                <button class="small-edit-btn" onclick="editCardImageBox7('${card.id}', 'before')">전(Before)</button>
+                                <button class="small-edit-btn" onclick="editCardImageBox7('${card.id}', 'after')">후(After)</button>
                             </div>
                         </div>
                         <div class="card-info">
@@ -2407,18 +2420,16 @@
             container.appendChild(addCardPlaceholder);
         }
 
-        function openSliderModal(beforeUrl, afterUrl, videoUrl) {
+        function openSliderModal(beforeUrl, afterUrl, videoUrl, targetBoxId) {
             const modal = document.getElementById('sliderModal');
             const modalContent = document.getElementById('sliderModalContent');
-            const box6 = document.getElementById('box-6');
+            const targetBox = document.getElementById(targetBoxId);
             const beforeElem = document.getElementById('modalImgBefore');
             const afterElem = document.getElementById('modalImgAfter');
             
-            // 6번 박스 위치를 기준으로 상단 여백을 동적 계산하여 정확히 6번 박스 영역에 위치하도록 설정
-            if (box6) {
-                const boxRect = box6.getBoundingClientRect();
+            if (targetBox) {
+                const boxRect = targetBox.getBoundingClientRect();
                 const absoluteTop = boxRect.top + window.pageYOffset;
-                // 페이지 상단에서 6번 박스 부근까지 자연스럽게 내려오도록 설정
                 modalContent.style.marginTop = `${Math.max(20, absoluteTop - 120)}px`;
             } else {
                 modalContent.style.marginTop = '40px';
@@ -2596,7 +2607,10 @@
             } else {
                 cardsDataBox7.push({
                     id: newId,
-                    mediaUrl: '',
+                    thumbnailUrl: '',
+                    beforeUrl: '',
+                    afterUrl: '',
+                    videoUrl: '',
                     badge: currentFilters[boxName] === 'completed' ? '분양 완료' : '분양 중',
                     title: '새 분양 항목',
                     sub: '상세 설명',
@@ -2688,14 +2702,36 @@
             }
         }
 
-        function editCardImageBox7(cardId) {
+        function editCardImageBox7(cardId, type) {
             if (!isAdmin) return;
             const card = cardsDataBox7.find(c => c.id === cardId);
             if (!card) return;
 
-            const newUrl = prompt("변경할 이미지 URL을 입력하세요:", card.mediaUrl);
+            let targetKey = 'thumbnailUrl';
+            let label = '썸네일';
+            if (type === 'before') {
+                targetKey = 'beforeUrl';
+                label = '전(Before)';
+            } else if (type === 'after') {
+                targetKey = 'afterUrl';
+                label = '후(After)';
+            }
+
+            const newUrl = prompt(`변경할 ${label} 이미지 URL을 입력하세요:`, card[targetKey] || card.mediaUrl || '');
             if (newUrl !== null) {
-                card.mediaUrl = newUrl.trim();
+                card[targetKey] = newUrl.trim();
+                saveCardsData('box7');
+            }
+        }
+
+        function editCardVideoUrlBox7(cardId) {
+            if (!isAdmin) return;
+            const card = cardsDataBox7.find(c => c.id === cardId);
+            if (!card) return;
+
+            const newUrl = prompt("연결할 영상 URL(유튜브 주소 또는 mp4 링크 등)을 입력하세요:", card.videoUrl || '');
+            if (newUrl !== null) {
+                card.videoUrl = newUrl.trim();
                 saveCardsData('box7');
             }
         }
@@ -2800,9 +2836,11 @@
                 }
             } else {
                 if (confirm("관리자 모드를 해제하시겠습니까?")) {
+                    // 해제 시점에 명시적으로 최종 서버 저장 수행
+                    saveCloudData();
                     isAdmin = false;
                     safeStorage.setItem('artmug_is_admin', 'false');
-                    alert("관리자 모드가 해제되었습니다.");
+                    alert("관리자 모드가 해제되고 변경 사항이 저장되었습니다.");
                     updateAdminModeUI();
                 }
             }
@@ -2864,7 +2902,6 @@
             }
         }
 
-        // 페이지를 열 때 서버에서 최신 데이터를 먼저 불러온 뒤 화면을 그림
         async function initApp() {
             await fetchCloudData();
             loadProfileData();
