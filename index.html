@@ -1225,30 +1225,28 @@
             font-weight: 600;
         }
 
-        /* --- 동기화 패널 박스 스타일 --- */
+        /* --- 오직 관리자 모드일 때만 보이는 동기화 패널 --- */
         .sync-panel-box {
+            display: none;
             width: 100%;
             background-color: #f8fafc;
             border: 1px dashed #cbd5e1;
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
-            display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+        body.admin-mode .sync-panel-box {
+            display: flex;
         }
         .sync-panel-title {
             font-size: 0.9rem;
             font-weight: 700;
             color: #334155;
         }
-        .sync-panel-btns {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
         .sync-btn {
-            padding: 8px 14px;
+            padding: 9px 14px;
             background-color: #475569;
             color: #ffffff;
             border: none;
@@ -1660,14 +1658,12 @@
                 <div class="card-container" id="cardContainerBox7"></div>
             </div>
 
-            <!-- PC/모바일 수동 동기화 패널 (관리자 모드일 때만 표시) -->
-            <div class="sync-panel-box" id="syncPanelBox" style="display:none;">
-                <div class="sync-panel-title">⚙️ 데이터 동기화 관리 (PC ↔ 모바일)</div>
-                <div class="sync-panel-btns">
-                    <button class="sync-btn" onclick="exportDataString()">PC 데이터 내보내기 (복사)</button>
-                </div>
-                <textarea class="sync-textarea" id="syncTextarea" placeholder="모바일에서 여기에 코드를 붙여넣은 뒤 아래 적용하기를 누르세요"></textarea>
-                <button class="sync-btn" onclick="importDataString()" style="background-color:#059669;">모바일에 데이터 붙여넣기 & 적용</button>
+            <!-- 관리자 모드일 때만 나타나는 동기화 패널 -->
+            <div class="sync-panel-box" id="syncPanelBox">
+                <div class="sync-panel-title">⚙️ PC ➔ 모바일 데이터 간편 동기화</div>
+                <button class="sync-btn" onclick="exportDataString()">1단계: PC 데이터 코드 복사하기</button>
+                <textarea class="sync-textarea" id="syncTextarea" placeholder="모바일에서 여기에 복사한 코드를 붙여넣으세요"></textarea>
+                <button class="sync-btn" onclick="importDataString()" style="background-color:#059669;">2단계: 모바일에 데이터 적용하기</button>
             </div>
         </div>
     </div>
@@ -1742,7 +1738,7 @@
             }
         };
 
-        // 수동 동기화 기능 함수들
+        // 간편 동기화 기능 함수들
         function exportDataString() {
             const allData = {};
             for (let i = 0; i < localStorage.length; i++) {
@@ -1757,14 +1753,14 @@
             textarea.value = encoded;
             textarea.select();
             document.execCommand('copy');
-            alert("PC 데이터가 클립보드에 복사되었습니다! 모바일 페이지의 동기화 칸에 붙여넣기 하세요.");
+            alert("PC 데이터 코드가 클립보드에 복사되었습니다! 모바일 페이지에서 관리자 모드를 켜고 붙여넣기 하세요.");
         }
 
         function importDataString() {
             const textarea = document.getElementById('syncTextarea');
             const val = textarea.value.trim();
             if (!val) {
-                alert("적용할 데이터를 입력(붙여넣기)해주세요.");
+                alert("적용할 코드를 입력(붙여넣기)해주세요.");
                 return;
             }
             try {
@@ -1776,7 +1772,7 @@
                 alert("모바일에 데이터가 성공적으로 적용되었습니다! 새로고침합니다.");
                 location.reload();
             } catch (e) {
-                alert("데이터 형식이 올바르지 않습니다. 코드를 다시 확인해주세요.");
+                alert("코드 형식이 올바르지 않습니다. 다시 확인해주세요.");
             }
         }
 
@@ -2791,10 +2787,8 @@
         function updateAdminModeUI() {
             if (isAdmin) {
                 document.body.classList.add('admin-mode');
-                document.getElementById('syncPanelBox').style.display = 'flex';
             } else {
                 document.body.classList.remove('admin-mode');
-                document.getElementById('syncPanelBox').style.display = 'none';
             }
             renderAccordionItems();
             renderWorkflowItems();
