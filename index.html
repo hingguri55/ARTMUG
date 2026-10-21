@@ -440,7 +440,7 @@
             color: #1e293b;
         }
 
-        /* --- 메인 박스 3번 (작업 과정 - 6열 원본 유지) --- */
+        /* --- 메인 박스 3번 (작업 과정) --- */
         .workflow-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -504,6 +504,71 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
+        }
+
+        /* --- 관리자 모드 메뉴 모달 스타일 --- */
+        .admin-menu-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(15, 23, 42, 0.7);
+            z-index: 2500;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .admin-menu-modal-overlay.open {
+            display: flex;
+        }
+        .admin-menu-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 360px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+            text-align: center;
+        }
+        .admin-menu-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .admin-menu-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .admin-action-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+            background-color: #f8fafc;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .admin-action-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .admin-action-btn.danger-btn {
+            background-color: #fff1f2;
+            color: #e11d48;
+            border-color: #fecaca;
+        }
+        .admin-action-btn.danger-btn:hover {
+            background-color: #fee2e2;
         }
 
         /* --- 커스텀 모달 스타일 --- */
@@ -844,7 +909,7 @@
             cursor: grabbing;
         }
 
-        /* --- 메인 박스 5번 (5열 원본 유지) --- */
+        /* --- 메인 박스 5번 --- */
         .card-container-box5 {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -1491,30 +1556,13 @@
             min-height: 20px;
         }
 
-        /* --- 모바일 전용 반응형 최적화 (모바일 기기에서만 작동) --- */
+        /* --- 모바일 전용 반응형 최적화 --- */
         @media screen and (max-width: 768px) {
             body {
                 padding: 15px 10px;
             }
             .large-box {
                 padding: 20px 15px;
-            }
-            /* 3번 박스 모바일에서 3열로 정렬하여 글자 잘림 방지 */
-            .workflow-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-            }
-            .workflow-card {
-                min-height: 110px;
-                padding: 14px 6px;
-            }
-            .workflow-card-title {
-                font-size: 0.75rem;
-            }
-            /* 5번 박스 모바일에서 적절한 크기로 조정 */
-            .card-container-box5 {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
             }
         }
     </style>
@@ -1696,6 +1744,18 @@
         </div>
     </div>
 
+    <!-- 깔끔한 관리자 메뉴 설정 모달 -->
+    <div class="admin-menu-modal-overlay" id="adminMenuModal">
+        <div class="admin-menu-card">
+            <div class="admin-menu-title">⚙️ 관리자 설정</div>
+            <div class="admin-menu-btn-group">
+                <button class="admin-action-btn" onclick="openChangePasswordDialog()">🔑 관리자 비밀번호 변경</button>
+                <button class="admin-action-btn danger-btn" onclick="disableAdminMode()">🔓 관리자 모드 해제</button>
+                <button class="admin-action-btn" onclick="closeAdminMenuModal()" style="background-color: #f1f5f9; border: none; font-weight: 500;">닫기</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 멀티라인 텍스트 수정 커스텀 모달 -->
     <div class="custom-modal-overlay" id="customTextModal">
         <div class="custom-modal-box">
@@ -1728,8 +1788,8 @@
                         <div class="badge-after-label">AFTER</div>
                         
                         <div class="comparison-slider-container" id="comparisonInner" style="position:relative; width:100%; height:100%;">
-                            <img id="modalImgAfter" class="img-after" src="" alt="After" loading="eager">
-                            <img id="modalImgBefore" class="img-before" src="" alt="Before" loading="eager">
+                            <img id="modalImgAfter" class="img-after" src="" alt="After">
+                            <img id="modalImgBefore" class="img-before" src="" alt="Before">
                             
                             <div class="slider-handle-line" id="sliderLine">
                                 <div class="slider-handle-button">↔</div>
@@ -1940,6 +2000,30 @@
             if (!c.videoUrl) c.videoUrl = '';
         });
 
+        // 🚀 이미지 미리 불러오기(Preload) 함수 추가: 백그라운드에서 즉시 다운로드하여 브라우저 캐시에 저장
+        function preloadImages() {
+            const urlsToPreload = [];
+            
+            const pImg = safeStorage.getItem('artmug_profile_img');
+            if (pImg) urlsToPreload.push(pImg);
+
+            [cardsDataBox5, cardsDataBox6, cardsDataBox7].forEach(arr => {
+                arr.forEach(item => {
+                    if (item.mediaUrl) urlsToPreload.push(item.mediaUrl);
+                    if (item.thumbnailUrl) urlsToPreload.push(item.thumbnailUrl);
+                    if (item.beforeUrl) urlsToPreload.push(item.beforeUrl);
+                    if (item.afterUrl) urlsToPreload.push(item.afterUrl);
+                });
+            });
+
+            urlsToPreload.forEach(url => {
+                if (url && url.trim() !== '' && !url.includes('placeholder.com')) {
+                    const img = new Image();
+                    img.src = url.trim();
+                }
+            });
+        }
+
         function loadProfileData() {
             const savedImg = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             const savedName = safeStorage.getItem('artmug_profile_name') || defaultProfile.name;
@@ -1949,7 +2033,7 @@
 
             const profileImgWrapper = document.getElementById('profileImgWrapper');
             if (savedImg && savedImg.trim() !== '' && !savedImg.includes('placeholder.com')) {
-                profileImgWrapper.innerHTML = `<img id="profileImg" src="${savedImg}" alt="프로필 이미지" loading="eager" style="width:100%; height:100%; object-fit:cover;">`;
+                profileImgWrapper.innerHTML = `<img id="profileImg" src="${savedImg}" alt="프로필 이미지" style="width:100%; height:100%; object-fit:cover;">`;
             } else {
                 profileImgWrapper.innerHTML = `<div class="card-placeholder-text">준비 중</div>`;
             }
@@ -1976,54 +2060,11 @@
             renderCards('box5');
             renderCards('box6');
             renderCards('box7');
-            preloadAllImages();
             applySavedBoxOrder();
             updateAdminModeUI();
-        }
 
-        function preloadAllImages() {
-            const profileImgSrc = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
-            if (profileImgSrc && profileImgSrc.trim() !== '' && !profileImgSrc.includes('placeholder.com')) {
-                const pImg = new Image();
-                pImg.src = profileImgSrc;
-            }
-
-            cardsDataBox5.forEach(card => {
-                if (card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com')) {
-                    const img = new Image();
-                    img.src = card.mediaUrl;
-                }
-            });
-
-            cardsDataBox6.forEach(card => {
-                if (card.thumbnailUrl && card.thumbnailUrl.trim() !== '' && !card.thumbnailUrl.includes('placeholder.com')) {
-                    const imgThumb = new Image();
-                    imgThumb.src = card.thumbnailUrl;
-                }
-                if (card.beforeUrl && card.beforeUrl.trim() !== '' && !card.beforeUrl.includes('placeholder.com')) {
-                    const imgBefore = new Image();
-                    imgBefore.src = card.beforeUrl;
-                }
-                if (card.afterUrl && card.afterUrl.trim() !== '' && !card.afterUrl.includes('placeholder.com')) {
-                    const imgAfter = new Image();
-                    imgAfter.src = card.afterUrl;
-                }
-            });
-
-            cardsDataBox7.forEach(card => {
-                if (card.thumbnailUrl && card.thumbnailUrl.trim() !== '' && !card.thumbnailUrl.includes('placeholder.com')) {
-                    const imgThumb = new Image();
-                    imgThumb.src = card.thumbnailUrl;
-                }
-                if (card.beforeUrl && card.beforeUrl.trim() !== '' && !card.beforeUrl.includes('placeholder.com')) {
-                    const imgBefore = new Image();
-                    imgBefore.src = card.beforeUrl;
-                }
-                if (card.afterUrl && card.afterUrl.trim() !== '' && !card.afterUrl.includes('placeholder.com')) {
-                    const imgAfter = new Image();
-                    imgAfter.src = card.afterUrl;
-                }
-            });
+            // 데이터 로드 직후 이미지 백그라운드 프리로드 실행
+            preloadImages();
         }
 
         let draggedAccordionItem = null;
@@ -2370,7 +2411,7 @@
 
                 if (isBox5) {
                     let mediaHtml = card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com') ? 
-                        `<img src="${card.mediaUrl}" alt="포트폴리오 이미지" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${card.mediaUrl}" alt="포트폴리오 이미지">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     cardElem.innerHTML = `
                         <div class="card-img-wrapper" style="width:100%; height:100%;">
@@ -2384,7 +2425,7 @@
                 } else if (isBox6) {
                     const displayThumb = card.thumbnailUrl;
                     let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
-                        `<img src="${displayThumb}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${displayThumb}" alt="${card.title}">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     const isChzzk = card.badge.toLowerCase() === 'chzzk';
                     const chzzkClass = isChzzk ? 'active-chzzk' : 'inactive';
@@ -2419,7 +2460,7 @@
                 } else {
                     const displayThumb = card.thumbnailUrl;
                     let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
-                        `<img src="${displayThumb}" alt="${card.title}" loading="eager">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${displayThumb}" alt="${card.title}">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     const isProgress = card.badge === '분양 중';
                     const progressClass = isProgress ? 'active-progress' : 'inactive';
@@ -2545,10 +2586,10 @@
                     videoId = trimmedUrl.split('embed/')[1].split('?')[0];
                 }
                 if (videoId) {
-                    embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&preload=auto" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 }
             } else if (trimmedUrl.match(/\.(mp4|webm|ogg)$/i) || trimmedUrl.startsWith('http')) {
-                embedHtml = `<video src="${trimmedUrl}" controls autoplay></video>`;
+                embedHtml = `<video src="${trimmedUrl}" controls autoplay preload="auto"></video>`;
             }
 
             if (embedHtml) {
@@ -2626,7 +2667,6 @@
                 safeStorage.setItem('artmug_cards_box7', JSON.stringify(cardsDataBox7));
             }
             renderCards(boxName);
-            preloadAllImages();
         }
 
         function addNewCard(boxName) {
@@ -2869,10 +2909,13 @@
             }
         }
 
+        /* --- 프로필 이름 클릭 시 다이얼로그 처리 --- */
         function handleNameClick() {
+            const currentAdminPassword = safeStorage.getItem('artmug_admin_password') || '1234';
+
             if (!isAdmin) {
                 const pwd = prompt("관리자 비밀번호를 입력하세요:");
-                if (pwd === "1234") {
+                if (pwd === currentAdminPassword) {
                     isAdmin = true;
                     safeStorage.setItem('artmug_is_admin', 'true');
                     alert("관리자 모드가 켜졌습니다!");
@@ -2881,12 +2924,28 @@
                     alert("비밀번호가 틀렸습니다.");
                 }
             } else {
-                if (confirm("관리자 모드를 해제하시겠습니까?")) {
-                    isAdmin = false;
-                    safeStorage.setItem('artmug_is_admin', 'false');
-                    alert("관리자 모드가 해제되었습니다.");
-                    updateAdminModeUI();
-                }
+                document.getElementById('adminMenuModal').classList.add('open');
+            }
+        }
+
+        function closeAdminMenuModal() {
+            document.getElementById('adminMenuModal').classList.remove('open');
+        }
+
+        function disableAdminMode() {
+            closeAdminMenuModal();
+            isAdmin = false;
+            safeStorage.setItem('artmug_is_admin', 'false');
+            alert("관리자 모드가 해제되었습니다.");
+            updateAdminModeUI();
+        }
+
+        function openChangePasswordDialog() {
+            closeAdminMenuModal();
+            const newPwd = prompt("새로 사용할 관리자 비밀번호를 입력하세요:");
+            if (newPwd !== null && newPwd.trim() !== "") {
+                safeStorage.setItem('artmug_admin_password', newPwd.trim());
+                alert("관리자 비밀번호가 성공적으로 변경되었습니다!");
             }
         }
 
@@ -2923,7 +2982,7 @@
 
         function editBox7Notice() {
             if (!isAdmin) return;
-            const currentNotice = document.getElementById('box7NoticeDesc').innerText;
+            const currentNotice = document.getElementById('box7NoticeDesc'.innerText);
             const newNotice = prompt("변경할 안내 사항을 입력하세요 (줄바꿈 가능):", currentNotice);
             if (newNotice !== null && newNotice.trim() !== "") {
                 document.getElementById('box7NoticeDesc').innerText = newNotice;
