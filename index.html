@@ -1556,13 +1556,21 @@
             min-height: 20px;
         }
 
-        /* --- 모바일 전용 반응형 최적화 --- */
+        /* --- 모바일 전용 반응형 최적화 수정 --- */
         @media screen and (max-width: 768px) {
             body {
                 padding: 15px 10px;
             }
             .large-box {
                 padding: 20px 15px;
+            }
+            .card-container-box5 {
+                grid-template-columns: repeat(3, 1fr); /* 모바일에서는 3열로 정렬하여 깨짐 방지 */
+            }
+        }
+        @media screen and (max-width: 480px) {
+            .card-container-box5 {
+                grid-template-columns: repeat(2, 1fr); /* 더 작은 화면에서는 2열 정렬 */
             }
         }
     </style>
@@ -1736,8 +1744,8 @@
 
             <!-- 관리자 모드일 때만 나타나는 동기화 패널 -->
             <div class="sync-panel-box" id="syncPanelBox">
-                <div class="sync-panel-title">⚙️ PC ➔ 모바일 데이터 간편 동기화</div>
-                <button class="sync-btn" onclick="exportDataString()">1단계: PC 데이터 코드 복사하기</button>
+                <div class="sync-panel-title">⚙️ PC ➔ 모바일 데이터 간편 동기화 (초단축 압축 코드)</div>
+                <button class="sync-btn" onclick="exportDataString()">1단계: 압축된 데이터 코드 복사하기</button>
                 <textarea class="sync-textarea" id="syncTextarea" placeholder="모바일에서 여기에 복사한 코드를 붙여넣으세요"></textarea>
                 <button class="sync-btn" onclick="importDataString()" style="background-color:#059669;">2단계: 모바일에 데이터 적용하기</button>
             </div>
@@ -1811,7 +1819,7 @@
         </div>
     </div>
 
-    <!-- 🚀 숨겨진 비디오 캐시 컨테이너 (영상이 뜨기 전 미리 로드용) -->
+    <!-- 🚀 숨겨진 비디오 캐시 컨테이너 -->
     <div id="videoPreloadContainer" style="display:none;"></div>
 
     <script>
@@ -1829,22 +1837,39 @@
             }
         };
 
-        // 간편 동기화 기능 함수들
+        // 🚀 데이터 코드를 대폭 압축하여 짧게 만들어주는 동기화 함수
         function exportDataString() {
-            const allData = {};
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('artmug_')) {
-                    allData[key] = localStorage.getItem(key);
-                }
+            const compactData = {
+                i: safeStorage.getItem('artmug_profile_img'),
+                n: safeStorage.getItem('artmug_profile_name'),
+                d: safeStorage.getItem('artmug_profile_desc'),
+                b5n: safeStorage.getItem('artmug_box5_notice'),
+                b7n: safeStorage.getItem('artmug_box7_notice'),
+                acc: safeStorage.getItem('artmug_accordion_data'),
+                wf: safeStorage.getItem('artmug_workflow_data'),
+                b5b: safeStorage.getItem('artmug_box5_badges'),
+                c5: safeStorage.getItem('artmug_cards_box5'),
+                c6: safeStorage.getItem('artmug_cards_box6'),
+                c7: safeStorage.getItem('artmug_cards_box7'),
+                ord: safeStorage.getItem('artmug_box_order'),
+                pwd: safeStorage.getItem('artmug_admin_password')
+            };
+
+            for (let i = 2; i <= 7; i++) {
+                compactData[`s${i}`] = safeStorage.getItem(`artmug_box${i}_sub`);
+                compactData[`t${i}`] = safeStorage.getItem(`artmug_box${i}_title`);
             }
-            const jsonStr = JSON.stringify(allData);
+
+            // 빈 데이터 제거로 코드 길이 최소화
+            Object.keys(compactData).forEach(k => (compactData[k] === null || compactData[k] === undefined) && delete compactData[k]);
+
+            const jsonStr = JSON.stringify(compactData);
             const encoded = btoa(encodeURIComponent(jsonStr));
             const textarea = document.getElementById('syncTextarea');
             textarea.value = encoded;
             textarea.select();
             document.execCommand('copy');
-            alert("PC 데이터 코드가 클립보드에 복사되었습니다! 모바일 페이지에서 관리자 모드를 켜고 붙여넣기 하세요.");
+            alert("초단축 압축 코드가 클립보드에 복사되었습니다! 모바일 페이지에서 관리자 모드를 켜고 붙여넣기 하세요.");
         }
 
         function importDataString() {
@@ -1856,10 +1881,27 @@
             }
             try {
                 const jsonStr = decodeURIComponent(atob(val));
-                const allData = JSON.parse(jsonStr);
-                for (const key in allData) {
-                    localStorage.setItem(key, allData[key]);
+                const data = JSON.parse(jsonStr);
+
+                if (data.i !== undefined) safeStorage.setItem('artmug_profile_img', data.i);
+                if (data.n !== undefined) safeStorage.setItem('artmug_profile_name', data.n);
+                if (data.d !== undefined) safeStorage.setItem('artmug_profile_desc', data.d);
+                if (data.b5n !== undefined) safeStorage.setItem('artmug_box5_notice', data.b5n);
+                if (data.b7n !== undefined) safeStorage.setItem('artmug_box7_notice', data.b7n);
+                if (data.acc !== undefined) safeStorage.setItem('artmug_accordion_data', data.acc);
+                if (data.wf !== undefined) safeStorage.setItem('artmug_workflow_data', data.wf);
+                if (data.b5b !== undefined) safeStorage.setItem('artmug_box5_badges', data.b5b);
+                if (data.c5 !== undefined) safeStorage.setItem('artmug_cards_box5', data.c5);
+                if (data.c6 !== undefined) safeStorage.setItem('artmug_cards_box6', data.c6);
+                if (data.c7 !== undefined) safeStorage.setItem('artmug_cards_box7', data.c7);
+                if (data.ord !== undefined) safeStorage.setItem('artmug_box_order', data.ord);
+                if (data.pwd !== undefined) safeStorage.setItem('artmug_admin_password', data.pwd);
+
+                for (let i = 2; i <= 7; i++) {
+                    if (data[`s${i}`] !== undefined) safeStorage.setItem(`artmug_box${i}_sub`, data[`s${i}`]);
+                    if (data[`t${i}`] !== undefined) safeStorage.setItem(`artmug_box${i}_title`, data[`t${i}`]);
                 }
+
                 alert("모바일에 데이터가 성공적으로 적용되었습니다! 새로고침합니다.");
                 location.reload();
             } catch (e) {
@@ -2003,7 +2045,7 @@
             if (!c.videoUrl) c.videoUrl = '';
         });
 
-        // 🚀 모든 이미지와 영상을 백그라운드에서 한 번에 미리 완벽하게 로드하는 강력한 Preload 함수
+        // 🚀 모든 미디어를 즉시 프리로드하여 딜레이 없애기
         function preloadAllMedia() {
             const urls = [];
             const pImg = safeStorage.getItem('artmug_profile_img');
@@ -2018,7 +2060,6 @@
                 });
             });
 
-            // 1) 이미지 캐싱
             urls.forEach(url => {
                 if (url && url.trim() !== '' && !url.includes('placeholder.com')) {
                     const img = new Image();
@@ -2026,7 +2067,6 @@
                 }
             });
 
-            // 2) 영상(MP4 및 유튜브) 백그라운드 선행 로드 캐싱
             const videoContainer = document.getElementById('videoPreloadContainer');
             videoContainer.innerHTML = '';
             [cardsDataBox6, cardsDataBox7].forEach(arr => {
@@ -2096,7 +2136,6 @@
             applySavedBoxOrder();
             updateAdminModeUI();
 
-            // 🚀 페이지 로드 직후 모든 미디어 즉시 프리로드 실행
             preloadAllMedia();
         }
 
@@ -2699,7 +2738,7 @@
                 safeStorage.setItem('artmug_cards_box7', JSON.stringify(cardsDataBox7));
             }
             renderCards(boxName);
-            preloadAllMedia(); // 데이터 추가/변경 시 즉시 재캐싱
+            preloadAllMedia();
         }
 
         function addNewCard(boxName) {
