@@ -1811,6 +1811,9 @@
         </div>
     </div>
 
+    <!-- 🚀 숨겨진 비디오 캐시 컨테이너 (영상이 뜨기 전 미리 로드용) -->
+    <div id="videoPreloadContainer" style="display:none;"></div>
+
     <script>
         const safeStorage = {
             getItem(key) {
@@ -2000,6 +2003,60 @@
             if (!c.videoUrl) c.videoUrl = '';
         });
 
+        // 🚀 모든 이미지와 영상을 백그라운드에서 한 번에 미리 완벽하게 로드하는 강력한 Preload 함수
+        function preloadAllMedia() {
+            const urls = [];
+            const pImg = safeStorage.getItem('artmug_profile_img');
+            if (pImg) urls.push(pImg);
+
+            [cardsDataBox5, cardsDataBox6, cardsDataBox7].forEach(arr => {
+                arr.forEach(item => {
+                    if (item.mediaUrl) urls.push(item.mediaUrl);
+                    if (item.thumbnailUrl) urls.push(item.thumbnailUrl);
+                    if (item.beforeUrl) urls.push(item.beforeUrl);
+                    if (item.afterUrl) urls.push(item.afterUrl);
+                });
+            });
+
+            // 1) 이미지 캐싱
+            urls.forEach(url => {
+                if (url && url.trim() !== '' && !url.includes('placeholder.com')) {
+                    const img = new Image();
+                    img.src = url.trim();
+                }
+            });
+
+            // 2) 영상(MP4 및 유튜브) 백그라운드 선행 로드 캐싱
+            const videoContainer = document.getElementById('videoPreloadContainer');
+            videoContainer.innerHTML = '';
+            [cardsDataBox6, cardsDataBox7].forEach(arr => {
+                arr.forEach(item => {
+                    if (item.videoUrl && item.videoUrl.trim() !== '') {
+                        const vUrl = item.videoUrl.trim();
+                        if (vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
+                            let videoId = '';
+                            if (vUrl.includes('youtu.be/')) videoId = vUrl.split('youtu.be/')[1].split('?')[0];
+                            else if (vUrl.includes('watch?v=')) videoId = vUrl.split('watch?v=')[1].split('&')[0];
+                            else if (vUrl.includes('embed/')) videoId = vUrl.split('embed/')[1].split('?')[0];
+                            if (videoId) {
+                                const iframe = document.createElement('iframe');
+                                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                                iframe.style.width = '1px';
+                                iframe.style.height = '1px';
+                                iframe.style.opacity = '0';
+                                videoContainer.appendChild(iframe);
+                            }
+                        } else if (vUrl.match(/\.(mp4|webm|ogg)$/i) || vUrl.startsWith('http')) {
+                            const video = document.createElement('video');
+                            video.src = vUrl;
+                            video.preload = 'auto';
+                            videoContainer.appendChild(video);
+                        }
+                    }
+                });
+            });
+        }
+
         function loadProfileData() {
             const savedImg = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             const savedName = safeStorage.getItem('artmug_profile_name') || defaultProfile.name;
@@ -2038,6 +2095,9 @@
             renderCards('box7');
             applySavedBoxOrder();
             updateAdminModeUI();
+
+            // 🚀 페이지 로드 직후 모든 미디어 즉시 프리로드 실행
+            preloadAllMedia();
         }
 
         let draggedAccordionItem = null;
@@ -2383,9 +2443,8 @@
                 }
 
                 if (isBox5) {
-                    // 🚀 lazy 속성을 추가하여 화면에 나타날 때만 이미지 로드
                     let mediaHtml = card.mediaUrl && card.mediaUrl.trim() !== '' && !card.mediaUrl.includes('placeholder.com') ? 
-                        `<img src="${card.mediaUrl}" alt="포트폴리오 이미지" loading="lazy" decoding="async">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${card.mediaUrl}" alt="포트폴리오 이미지">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     cardElem.innerHTML = `
                         <div class="card-img-wrapper" style="width:100%; height:100%;">
@@ -2399,7 +2458,7 @@
                 } else if (isBox6) {
                     const displayThumb = card.thumbnailUrl;
                     let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
-                        `<img src="${displayThumb}" alt="${card.title}" loading="lazy" decoding="async">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${displayThumb}" alt="${card.title}">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     const isChzzk = card.badge.toLowerCase() === 'chzzk';
                     const chzzkClass = isChzzk ? 'active-chzzk' : 'inactive';
@@ -2434,7 +2493,7 @@
                 } else {
                     const displayThumb = card.thumbnailUrl;
                     let mediaHtml = displayThumb && displayThumb.trim() !== '' && !displayThumb.includes('placeholder.com') ? 
-                        `<img src="${displayThumb}" alt="${card.title}" loading="lazy" decoding="async">` : `<div class="card-placeholder-text">준비 중</div>`;
+                        `<img src="${displayThumb}" alt="${card.title}">` : `<div class="card-placeholder-text">준비 중</div>`;
 
                     const isProgress = card.badge === '분양 중';
                     const progressClass = isProgress ? 'active-progress' : 'inactive';
@@ -2511,8 +2570,6 @@
         function closeSliderModal(e) {
             if (!e || e.target.id === 'sliderModal' || e.target.classList.contains('slider-modal-close')) {
                 document.getElementById('sliderModal').classList.remove('open');
-                // 🚀 모달이 닫힐 때 영상 컨테이너를 비워 메모리를 즉시 해제하여 속도 저하 방지
-                document.getElementById('modalVideoContent').innerHTML = '<div class="modal-video-placeholder">등록된 영상이 없습니다.</div>';
             }
         }
 
@@ -2561,7 +2618,6 @@
                     videoId = trimmedUrl.split('embed/')[1].split('?')[0];
                 }
                 if (videoId) {
-                    // 🚀 유튜브 영상은 모달을 열었을 때만 동적으로 생성되어 로딩 지연 원천 차단
                     embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 }
             } else if (trimmedUrl.match(/\.(mp4|webm|ogg)$/i) || trimmedUrl.startsWith('http')) {
@@ -2643,6 +2699,7 @@
                 safeStorage.setItem('artmug_cards_box7', JSON.stringify(cardsDataBox7));
             }
             renderCards(boxName);
+            preloadAllMedia(); // 데이터 추가/변경 시 즉시 재캐싱
         }
 
         function addNewCard(boxName) {
