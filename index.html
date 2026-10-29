@@ -2653,7 +2653,8 @@
                     embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 }
             } else if (trimmedUrl.match(/\.(mp4|webm|ogg)$/i) || trimmedUrl.startsWith('http')) {
-                embedHtml = `<video src="${trimmedUrl}" controls autoplay></video>`;
+                // 🚀 MP4 영상이 GIF처럼 무한반복, 자동재생, 음소거(모바일 정책 대응), 컨트롤러 숨김 처리되도록 속성 부여
+                embedHtml = `<video src="${trimmedUrl}" autoplay loop muted playsinline></video>`;
             }
 
             if (embedHtml) {
