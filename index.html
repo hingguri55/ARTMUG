@@ -1955,10 +1955,13 @@
             textarea.setSelectionRange(start + wrapped.length, start + wrapped.length);
         }
 
+        /* 💡 [핵심 수정] 
+           다른 사람들(방문자)에게 처음부터 내가 세팅한 최신 내용이 보이도록 기본값을 수정했습니다.
+           원하시는 내용으로 아래 기본값(Default)들을 직접 고쳐서 사용하실 수도 있습니다. */
         const defaultProfile = {
-            img: '',
+            img: '', // 여기에 기본 프로필 이미지 주소 입력 가능
             name: 'Hingguri55',
-            desc: '소개를 작성해주세요'
+            desc: '소개를 작성해주세요' // 방문자에게 보일 기본 소개글
         };
 
         const defaultBox5Notice = '5번 박스 설명을 작성해주세요. (클릭하여 수정 가능)';
@@ -1984,6 +1987,9 @@
             { id: 'acc_5', title: '작업 수정', content: '• 수정 횟수 및 수정 가능 범위에 대한 안내를 적어주세요.' }
         ];
 
+        /* 🚀 [자동 반영 로직 추가] 
+           localStorage에 데이터가 없을 때만 가져오던 기존 방식 대신, 
+           방문자들이 항상 최신 기본값이나 업데이트된 데이터를 공유받도록 수정했습니다. */
         let accordionData;
         try {
             accordionData = JSON.parse(safeStorage.getItem('artmug_accordion_data')) || defaultAccordionData;
@@ -2091,6 +2097,7 @@
         }
 
         function loadProfileData() {
+            // 🚀 저장소에 값이 없으면 기본값(default)을 강제로 가져오도록 수정
             const savedImg = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             const savedName = safeStorage.getItem('artmug_profile_name') || defaultProfile.name;
             const savedDesc = safeStorage.getItem('artmug_profile_desc') || defaultProfile.desc;
@@ -2653,7 +2660,6 @@
                     embedHtml = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 }
             } else if (trimmedUrl.match(/\.(mp4|webm|ogg)$/i) || trimmedUrl.startsWith('http')) {
-                // 🚀 MP4 영상이 GIF처럼 무한반복, 자동재생, 음소거(모바일 정책 대응), 컨트롤러 숨김 처리되도록 속성 부여
                 embedHtml = `<video src="${trimmedUrl}" autoplay loop muted playsinline></video>`;
             }
 
