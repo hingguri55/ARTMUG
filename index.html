@@ -440,7 +440,7 @@
             color: #1e293b;
         }
 
-        /* --- 메인 박스 3번 (작업 과정) 모바일 완벽 최적화 --- */
+        /* --- 메인 박스 3번 (작업 과정) --- */
         .workflow-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -885,7 +885,7 @@
             border-radius: 2px;
         }
 
-        /* --- 카드 컨테이너 --- */
+        /* --- 카드 컨테이너 (박스 6, 7번 가로 스크롤 & 마우스 드래그 기능 복구) --- */
         .card-container {
             display: flex;
             flex-wrap: nowrap;
@@ -1568,7 +1568,7 @@
                 grid-template-columns: repeat(3, 1fr);
             }
             .workflow-grid {
-                grid-template-columns: repeat(3, 1fr); /* 모바일 3열 2행 구조로 깔끔하게 배치 */
+                grid-template-columns: repeat(3, 1fr);
             }
         }
         @media screen and (max-width: 480px) {
@@ -1576,7 +1576,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             .workflow-grid {
-                grid-template-columns: repeat(2, 1fr); /* 더 작은 화면에서는 2열 구조 */
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -1750,10 +1750,10 @@
 
             <!-- 관리자 모드일 때만 나타나는 동기화 패널 -->
             <div class="sync-panel-box" id="syncPanelBox">
-                <div class="sync-panel-title">⚙️ PC ➔ 모바일 데이터 초단축 동기화</div>
-                <button class="sync-btn" onclick="exportDataString()">1단계: 초간단 코드 복사하기</button>
-                <textarea class="sync-textarea" id="syncTextarea" placeholder="모바일에서 여기에 복사한 코드를 붙여넣으세요"></textarea>
-                <button class="sync-btn" onclick="importDataString()" style="background-color:#059669;">2단계: 모바일에 데이터 적용하기</button>
+                <div class="sync-panel-title">⚙️ 방문자 공유용 URL 자동 동기화</div>
+                <div style="font-size:0.8rem; color:#64748b; line-height:1.4;">관리자 모드에서 수정 및 저장하면 아래 박스에 <b>다른 사람들에게 공유할 수 있는 완성된 링크 주소</b>가 자동으로 생성됩니다. 이 주소를 아트머그에 넣어주세요!</div>
+                <textarea class="sync-textarea" id="syncTextarea" readonly placeholder="수정 시 여기에 공유용 URL이 자동 생성됩니다"></textarea>
+                <button class="sync-btn" onclick="copyShareUrl()" style="background-color:#059669;">공유용 링크 복사하기</button>
             </div>
         </div>
     </div>
@@ -1830,7 +1830,29 @@
 
     <script>
         const safeStorage = {
+            _getDataFromHash() {
+                try {
+                    const hash = window.location.hash.substring(1);
+                    if (!hash) return {};
+                    const jsonStr = decodeURIComponent(atob(hash));
+                    return JSON.parse(jsonStr);
+                } catch (e) {
+                    return {};
+                }
+            },
+            _saveDataToHash(data) {
+                try {
+                    const jsonStr = JSON.stringify(data);
+                    const encoded = btoa(encodeURIComponent(jsonStr));
+                    window.location.hash = encoded;
+                } catch (e) {
+                    console.error("해시 저장 실패", e);
+                }
+            },
             getItem(key) {
+                const hashData = this._getDataFromHash();
+                if (hashData[key] !== undefined) return hashData[key];
+                
                 try { return localStorage.getItem(key); } catch (e) { return window._memoryStorage?.[key] || null; }
             },
             setItem(key, val) {
@@ -1840,66 +1862,44 @@
                     if (!window._memoryStorage) window._memoryStorage = {};
                     window._memoryStorage[key] = val;
                 }
+                
+                const allKeys = [
+                    'artmug_profile_img', 'artmug_profile_name', 'artmug_profile_desc',
+                    'artmug_box5_notice', 'artmug_box7_notice', 'artmug_accordion_data',
+                    'artmug_workflow_data', 'artmug_box5_badges', 'artmug_cards_box5',
+                    'artmug_cards_box6', 'artmug_cards_box7', 'artmug_box_order', 'artmug_admin_password'
+                ];
+                
+                const data = {};
+                allKeys.forEach(k => {
+                    const v = localStorage.getItem(k);
+                    if (v !== null && v !== undefined) data[k] = v;
+                });
+
+                for (let i = 2; i <= 7; i++) {
+                    const sub = localStorage.getItem(`artmug_box${i}_sub`);
+                    const title = localStorage.getItem(`artmug_box${i}_title`);
+                    if (sub !== null) data[`b${i}s`] = sub;
+                    if (title !== null) data[`b${i}t`] = title;
+                }
+                
+                this._saveDataToHash(data);
+                updateSyncTextarea();
             }
         };
 
-        // 🚀 데이터 저장소에서 값이 실제로 존재하고 변경된 것만 골라 담아 코드를 최소한으로 줄여주는 초단축 압축 함수
-        function exportDataString() {
-            const data = {};
-            const keys = [
-                'artmug_profile_img', 'artmug_profile_name', 'artmug_profile_desc',
-                'artmug_box5_notice', 'artmug_box7_notice', 'artmug_accordion_data',
-                'artmug_workflow_data', 'artmug_box5_badges', 'artmug_cards_box5',
-                'artmug_cards_box6', 'artmug_cards_box7', 'artmug_box_order', 'artmug_admin_password'
-            ];
-
-            keys.forEach(k => {
-                const val = safeStorage.getItem(k);
-                if (val !== null && val !== undefined) data[k] = val;
-            });
-
-            for (let i = 2; i <= 7; i++) {
-                const sub = safeStorage.getItem(`artmug_box${i}_sub`);
-                const title = safeStorage.getItem(`artmug_box${i}_title`);
-                if (sub !== null) data[`b${i}s`] = sub;
-                if (title !== null) data[`b${i}t`] = title;
-            }
-
-            const jsonStr = JSON.stringify(data);
-            const encoded = btoa(encodeURIComponent(jsonStr));
+        function updateSyncTextarea() {
             const textarea = document.getElementById('syncTextarea');
-            textarea.value = encoded;
-            textarea.select();
-            document.execCommand('copy');
-            alert("초단축 압축 코드가 복사되었습니다!");
+            if (textarea) {
+                textarea.value = window.location.href;
+            }
         }
 
-        function importDataString() {
+        function copyShareUrl() {
             const textarea = document.getElementById('syncTextarea');
-            const val = textarea.value.trim();
-            if (!val) {
-                alert("적용할 코드를 입력(붙여넣기)해주세요.");
-                return;
-            }
-            try {
-                const jsonStr = decodeURIComponent(atob(val));
-                const data = JSON.parse(jsonStr);
-
-                for (const k in data) {
-                    if (k.startsWith('b') && (k.endsWith('s') || k.endsWith('t'))) {
-                        const boxNum = k.charAt(1);
-                        const type = k.endsWith('s') ? 'sub' : 'title';
-                        safeStorage.setItem(`artmug_box${boxNum}_${type}`, data[k]);
-                    } else {
-                        safeStorage.setItem(k, data[k]);
-                    }
-                }
-
-                alert("모바일에 데이터가 성공적으로 적용되었습니다! 새로고침합니다.");
-                location.reload();
-            } catch (e) {
-                alert("코드 형식이 올바르지 않습니다. 다시 확인해주세요.");
-            }
+            textarea.select();
+            document.execCommand('copy');
+            alert("방문자 공유용 링크가 복사되었습니다!\n이 링크를 아트머그 iframe 주소에 넣어주세요.");
         }
 
         let isAdmin = safeStorage.getItem('artmug_is_admin') === 'true';
@@ -1955,13 +1955,10 @@
             textarea.setSelectionRange(start + wrapped.length, start + wrapped.length);
         }
 
-        /* 💡 [핵심 수정] 
-           다른 사람들(방문자)에게 처음부터 내가 세팅한 최신 내용이 보이도록 기본값을 수정했습니다.
-           원하시는 내용으로 아래 기본값(Default)들을 직접 고쳐서 사용하실 수도 있습니다. */
         const defaultProfile = {
-            img: '', // 여기에 기본 프로필 이미지 주소 입력 가능
+            img: '',
             name: 'Hingguri55',
-            desc: '소개를 작성해주세요' // 방문자에게 보일 기본 소개글
+            desc: '소개를 작성해주세요'
         };
 
         const defaultBox5Notice = '5번 박스 설명을 작성해주세요. (클릭하여 수정 가능)';
@@ -1987,9 +1984,6 @@
             { id: 'acc_5', title: '작업 수정', content: '• 수정 횟수 및 수정 가능 범위에 대한 안내를 적어주세요.' }
         ];
 
-        /* 🚀 [자동 반영 로직 추가] 
-           localStorage에 데이터가 없을 때만 가져오던 기존 방식 대신, 
-           방문자들이 항상 최신 기본값이나 업데이트된 데이터를 공유받도록 수정했습니다. */
         let accordionData;
         try {
             accordionData = JSON.parse(safeStorage.getItem('artmug_accordion_data')) || defaultAccordionData;
@@ -2044,7 +2038,6 @@
             if (!c.videoUrl) c.videoUrl = '';
         });
 
-        // 🚀 미디어 즉시 프리로드
         function preloadAllMedia() {
             const urls = [];
             const pImg = safeStorage.getItem('artmug_profile_img');
@@ -2065,39 +2058,9 @@
                     img.src = url.trim();
                 }
             });
-
-            const videoContainer = document.getElementById('videoPreloadContainer');
-            videoContainer.innerHTML = '';
-            [cardsDataBox6, cardsDataBox7].forEach(arr => {
-                arr.forEach(item => {
-                    if (item.videoUrl && item.videoUrl.trim() !== '') {
-                        const vUrl = item.videoUrl.trim();
-                        if (vUrl.includes('youtube.com') || vUrl.includes('youtu.be')) {
-                            let videoId = '';
-                            if (vUrl.includes('youtu.be/')) videoId = vUrl.split('youtu.be/')[1].split('?')[0];
-                            else if (vUrl.includes('watch?v=')) videoId = vUrl.split('watch?v=')[1].split('&')[0];
-                            else if (vUrl.includes('embed/')) videoId = vUrl.split('embed/')[1].split('?')[0];
-                            if (videoId) {
-                                const iframe = document.createElement('iframe');
-                                iframe.src = `https://www.youtube.com/embed/${videoId}`;
-                                iframe.style.width = '1px';
-                                iframe.style.height = '1px';
-                                iframe.style.opacity = '0';
-                                videoContainer.appendChild(iframe);
-                            }
-                        } else if (vUrl.match(/\.(mp4|webm|ogg)$/i) || vUrl.startsWith('http')) {
-                            const video = document.createElement('video');
-                            video.src = vUrl;
-                            video.preload = 'auto';
-                            videoContainer.appendChild(video);
-                        }
-                    }
-                });
-            });
         }
 
         function loadProfileData() {
-            // 🚀 저장소에 값이 없으면 기본값(default)을 강제로 가져오도록 수정
             const savedImg = safeStorage.getItem('artmug_profile_img') || defaultProfile.img;
             const savedName = safeStorage.getItem('artmug_profile_name') || defaultProfile.name;
             const savedDesc = safeStorage.getItem('artmug_profile_desc') || defaultProfile.desc;
@@ -2135,6 +2098,7 @@
             renderCards('box7');
             applySavedBoxOrder();
             updateAdminModeUI();
+            updateSyncTextarea();
 
             preloadAllMedia();
         }
@@ -2692,6 +2656,7 @@
             updateSliderPosition(percent);
         }
 
+        /* 🚀 가로 스크롤 및 마우스 드래그 기능 함수 복구 */
         function setupContainerScroll(containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -2981,7 +2946,6 @@
             }
         }
 
-        /* --- 프로필 이름 클릭 시 다이얼로그 처리 --- */
         function handleNameClick() {
             const currentAdminPassword = safeStorage.getItem('artmug_admin_password') || '1234';
 
